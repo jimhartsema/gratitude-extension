@@ -11,12 +11,16 @@ A Chrome extension that sends you a warm, joyful notification every hour while y
 
 ## Install (Until the Chrome Web Store listing is live)
 
+> **Important:** Chrome notifications must be enabled or you will not receive any reminders.
+> Go to **Chrome Settings → Privacy and security → Site settings → Notifications** and make sure notifications are allowed. On macOS, also check **System Settings → Notifications → Google Chrome** and turn them on there.
+
 1. Click the green **Code** button on this page, then **Download ZIP**
 2. Unzip the downloaded file on your computer
 3. Open `chrome://extensions` in Chrome
 4. Enable **Developer mode** (top-right toggle)
 5. Click **Load unpacked** and select the unzipped folder
-6. Done — you'll receive your first reminder within the hour
+6. **Enable Chrome notifications** (see the note above — this is required)
+7. Done — you'll receive your first reminder within the hour
 
 ## How It Works
 
