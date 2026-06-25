@@ -9,13 +9,14 @@ A Chrome extension that sends you a warm, joyful notification every hour while y
 - Simple on/off toggle — no clutter, no settings overload
 - Fully offline — no API calls, no costs, no data collection
 
-## Install (Developer Mode)
+## Install (Until the Chrome Web Store listing is live)
 
-1. Download or clone this repo
-2. Open `chrome://extensions` in Chrome
-3. Enable **Developer mode** (top-right toggle)
-4. Click **Load unpacked** and select the project folder
-5. Done — you'll receive your first reminder within the hour
+1. Click the green **Code** button on this page, then **Download ZIP**
+2. Unzip the downloaded file on your computer
+3. Open `chrome://extensions` in Chrome
+4. Enable **Developer mode** (top-right toggle)
+5. Click **Load unpacked** and select the unzipped folder
+6. Done — you'll receive your first reminder within the hour
 
 ## How It Works
 
