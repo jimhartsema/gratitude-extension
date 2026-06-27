@@ -4,22 +4,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daily Gratitude</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="sun">☀️</div>
-    <h1>Daily Gratitude</h1>
-    <p class="subtitle">Hourly reminders to warm your heart</p>
+  <div class="card">
+    <div class="header">
+      <span class="mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#bf5a2e" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="12" cy="13.5" r="4"></circle>
+          <line x1="12" y1="3.2" x2="12" y2="6"></line>
+          <line x1="3.8" y1="13.5" x2="1.5" y2="13.5"></line>
+          <line x1="22.5" y1="13.5" x2="20.2" y2="13.5"></line>
+          <line x1="5.6" y1="7.1" x2="4" y2="5.5"></line>
+          <line x1="18.4" y1="7.1" x2="20" y2="5.5"></line>
+        </svg>
+      </span>
+      <span class="wordmark">Daily Gratitude</span>
+    </div>
 
-    <div class="toggle-row">
-      <span class="label" id="status-label">Notifications on</span>
-      <label class="switch">
-        <input type="checkbox" id="toggle" checked />
-        <span class="slider"></span>
-      </label>
+    <div class="rule"></div>
+
+    <p class="sentence" id="sentence">You are doing better than you think.</p>
+
+    <div class="footer">
+      <button class="another" id="another" type="button">
+        <svg class="another-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="21 5 21 10 16 10"></polyline>
+          <path d="M19.4 14a8 8 0 1 1-1.9-8.3L21 10"></path>
+        </svg>
+        <span class="another-text">another</span>
+      </button>
+
+      <div class="toggle-row">
+        <span class="status" id="status-label">Notifications on</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
   </div>
+
+  <script src="sentences.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

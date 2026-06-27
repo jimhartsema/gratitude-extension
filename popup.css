@@ -1,62 +1,134 @@
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  background: transparent;
+}
+
 body {
-  width: 240px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #fff8e7 0%, #fff3d4 100%);
-  color: #4a3728;
+  margin: 0;
+  width: 320px;
+  background: #f7f2e8;
+  border-radius: 18px;
+  overflow: hidden;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-.container {
-  padding: 24px 20px;
-  text-align: center;
+.card {
+  width: 320px;
+  background: #f7f2e8;
+  border-radius: 18px;
+  padding: 26px 26px 22px;
 }
 
-.sun {
-  font-size: 36px;
-  margin-bottom: 8px;
+/* ---- Header ---- */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-h1 {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  margin-bottom: 4px;
+.mark {
+  display: inline-flex;
+  flex: none;
 }
 
-.subtitle {
-  font-size: 11px;
-  color: #a0886a;
+.wordmark {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #7a6f5e;
+}
+
+.rule {
+  height: 1px;
+  background: #e3d9c6;
   margin-bottom: 20px;
 }
 
-.toggle-row {
+/* ---- Hero sentence ---- */
+.sentence {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 400;
+  font-size: 27px;
+  line-height: 1.28;
+  color: #2c2620;
+  margin: 0 0 24px;
+  text-wrap: pretty;
+}
+
+/* ---- Footer ---- */
+.footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
-  padding: 12px 16px;
+  gap: 12px;
 }
 
-.label {
-  font-size: 13px;
-  font-weight: 500;
+.another {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #bf5a2e;
 }
 
-/* Toggle switch */
+.another-icon {
+  display: block;
+}
+
+.another-text {
+  font-family: "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1;
+  border-bottom: 1px solid #e0b89f;
+  padding-bottom: 1px;
+  transition: border-color 0.15s ease;
+}
+
+.another:hover .another-text {
+  border-bottom-color: #bf5a2e;
+}
+
+.another:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---- Toggle ---- */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.status {
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9a8f7d;
+  white-space: nowrap;
+}
+
 .switch {
   position: relative;
   display: inline-block;
-  width: 44px;
-  height: 24px;
+  width: 36px;
+  height: 20px;
+  flex: none;
 }
 
 .switch input {
+  position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
@@ -64,30 +136,76 @@ h1 {
 
 .slider {
   position: absolute;
-  cursor: pointer;
   inset: 0;
-  background: #d4c4b0;
-  border-radius: 24px;
-  transition: background 0.2s;
+  background: #d8cdb8;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .slider::before {
-  content: '';
+  content: "";
   position: absolute;
-  width: 18px;
-  height: 18px;
-  left: 3px;
-  top: 3px;
-  background: white;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
 }
 
-input:checked + .slider {
-  background: #f4a83a;
+.switch input:checked + .slider {
+  background: #bf5a2e;
 }
 
-input:checked + .slider::before {
-  transform: translateX(20px);
+.switch input:checked + .slider::before {
+  transform: translateX(16px);
+}
+
+.switch input:focus-visible + .slider {
+  outline: 2px solid #e0b89f;
+  outline-offset: 2px;
+}
+
+/* ---- Entrance animation ---- */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  animation: fadeUp 300ms ease-out both;
+  animation-delay: 0ms;
+}
+
+.rule {
+  animation: fadeUp 300ms ease-out both;
+  animation-delay: 70ms;
+}
+
+.sentence {
+  animation: fadeUp 360ms ease-out both;
+  animation-delay: 140ms;
+}
+
+.footer {
+  animation: fadeUp 300ms ease-out both;
+  animation-delay: 220ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .rule,
+  .sentence,
+  .footer {
+    animation: none;
+  }
 }
