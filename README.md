@@ -70,4 +70,4 @@ locally in your browser and never leaves your device.
 **Third parties:** None. No analytics, no tracking tools, no external 
 services of any kind are used.
 
-**Contact:** Questions? Reach out at jimhartsema@gmail.com
+**Contact:** Questions? Reach out at hartsemagroup@gmail.com
