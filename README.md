@@ -1,50 +1,73 @@
-# Daily Gratitude — Chrome Extension
+# Daily Gratitude 🌤️
 
-A Chrome extension that sends you a warm, joyful notification every hour while your browser is open — so you never feel alone, and always feel reminded of the good in your life.
+A tiny Chrome extension that sends you one warm reminder every hour — a small nudge to pause and notice something good in your day.
 
-## Features
+**→ [Install from the Chrome Web Store](#)** *(link coming soon)*
 
-- Hourly native notifications with uplifting messages
-- 100 hand-curated warm and joyful sentences
-- Simple on/off toggle — no clutter, no settings overload
-- Fully offline — no API calls, no costs, no data collection
+---
 
-## Install (Until the Chrome Web Store listing is live)
+## What it does
 
-> **Important:** Chrome notifications must be enabled or you will not receive any reminders.
-> Go to **Chrome Settings → Privacy and security → Site settings → Notifications** and make sure notifications are allowed. On macOS, also check **System Settings → Notifications → Google Chrome** and turn them on there.
+Every hour, while Chrome is open, a short message pops up on your screen — something like:
 
-1. Click the green **Code** button on this page, then **Download ZIP**
-2. Unzip the downloaded file on your computer
-3. Open `chrome://extensions` in Chrome
-4. Enable **Developer mode** (top-right toggle)
-5. Click **Load unpacked** and select the unzipped folder
-6. **Enable Chrome notifications** (see the note above — this is required)
-7. Done — you'll receive your first reminder within the hour
+> *"Everything you need is already within you."*
 
-## How It Works
+Click the extension icon any time to see a message, tap **another** for a new one, or switch reminders on and off with a single toggle.
 
-The extension uses Chrome's `alarms` API to fire every 60 minutes. When the alarm fires, it checks that at least one browser window is open, then picks a random sentence from the local list and sends a native OS notification. No internet connection required.
+That's it. No account. No ads. No data collected. Completely free.
 
-## Project Structure
+---
 
-```
-gratitude-extension/
-├── manifest.json       # Chrome Extension Manifest V3
-├── background.js       # Service worker — alarm setup and notification logic
-├── sentences.js        # 100 curated warm sentences
-├── popup.html          # Extension popup UI
-├── popup.css           # Popup styles
-├── popup.js            # Popup toggle logic
-└── icons/              # Extension icons (16, 48, 128px)
-```
+## Install
 
-## Coming Soon
+### From the Chrome Web Store *(coming soon)*
+Just click **Add to Chrome** — done in 10 seconds.
 
-- Chrome Web Store listing
-- Custom notification schedule
-- Themed icon designs
+### Manually (available now)
+1. Click the green **Code** button on this page → **Download ZIP**
+2. Unzip the file on your computer
+3. In Chrome, go to `chrome://extensions`
+4. Turn on **Developer mode** (toggle in the top-right corner)
+5. Click **Load unpacked** → select the unzipped folder
+6. Done ✅ Your first reminder arrives within the hour
 
-## License
+---
 
-MIT
+## ⚠️ Important: allow Chrome to send notifications
+
+The reminders won't show up unless your computer allows Chrome to send notifications. Here's how to check:
+
+**On Mac:**
+1. Open **System Settings** → **Notifications**
+2. Find **Google Chrome** in the list
+3. Make sure notifications are turned **on**
+
+**On Windows:**
+1. Open **Settings** → **System** → **Notifications**
+2. Find **Google Chrome** in the list
+3. Make sure notifications are turned **on**
+
+If you don't see any reminders after an hour, this is almost always the reason.
+
+---
+
+## Privacy
+
+Daily Gratitude was built with one rule: your data is yours.
+
+**What we collect:** Nothing. Daily Gratitude does not collect, store, or 
+transmit any personal information, browsing history, or usage data.
+
+**What stays on your device:** The only thing stored is your single 
+preference — whether hourly reminders are turned on or off. This is saved 
+locally in your browser and never leaves your device.
+
+**Permissions explained:**
+- `alarms` — schedules the hourly reminder
+- `notifications` — displays the reminder on your screen
+- `storage` — remembers your on/off preference
+
+**Third parties:** None. No analytics, no tracking tools, no external 
+services of any kind are used.
+
+**Contact:** Questions? Reach out at jimhartsema@gmail.com
