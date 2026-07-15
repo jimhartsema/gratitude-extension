@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const winSteps = document.getElementById('win-steps');
   const tabMac = document.getElementById('tab-mac');
   const tabWin = document.getElementById('tab-win');
+  const pinTip = document.getElementById('pin-tip');
 
   if (isFixContext) {
     heading.textContent = "Let's fix your notifications";
@@ -46,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
       chromeNote.hidden = false;
       fixSection.hidden = false;
     }
+
+    const pinned = await isPinnedToToolbar();
+    pinTip.hidden = pinned;
   });
 
   notSeenLink.addEventListener('click', () => {

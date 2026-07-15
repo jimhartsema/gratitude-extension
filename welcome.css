@@ -198,6 +198,23 @@ body {
   color: #2c2620;
 }
 
+.pin-tip {
+  margin-top: 22px;
+  padding: 14px 16px;
+  background: #ece4d2;
+  border-radius: 10px;
+}
+
+.pin-tip-heading {
+  font-size: 12.5px;
+  color: #5c5344;
+  margin: 0 0 12px;
+}
+
+.pin-tip .steps {
+  margin: 0;
+}
+
 .footnote {
   font-size: 11px;
   color: #9a8f7d;

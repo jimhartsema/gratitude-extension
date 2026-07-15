@@ -19,6 +19,16 @@ function getNotificationPermissionLevel() {
   });
 }
 
+function isPinnedToToolbar() {
+  return new Promise((resolve) => {
+    if (!chrome.action || !chrome.action.getUserSettings) {
+      resolve(true); // API unavailable — don't nag if we can't tell.
+      return;
+    }
+    chrome.action.getUserSettings((settings) => resolve(!!settings.isOnToolbar));
+  });
+}
+
 function detectPlatform() {
   const raw = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
   return raw.toLowerCase().includes('win') ? 'win' : 'mac';
