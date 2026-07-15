@@ -169,6 +169,39 @@ body {
   outline-offset: 2px;
 }
 
+/* ---- Test notification ---- */
+.test-link {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: inline-block;
+  cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f7f2e8;
+  background: #bf5a2e;
+  border-radius: 999px;
+  padding: 8px 16px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.test-link:hover {
+  background: #a94e26;
+}
+
+.test-link:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.test-link.test-link--warn {
+  background: #8a3a1a;
+}
+
 /* ---- Entrance animation ---- */
 @keyframes fadeUp {
   from {

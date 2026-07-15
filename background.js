@@ -13,7 +13,12 @@ function setupAlarm() {
   });
 }
 
-chrome.runtime.onInstalled.addListener(setupAlarm);
+chrome.runtime.onInstalled.addListener((details) => {
+  setupAlarm();
+  if (details.reason === 'install') {
+    chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
+  }
+});
 chrome.runtime.onStartup.addListener(setupAlarm);
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
