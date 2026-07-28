@@ -1,0 +1,1115 @@
+/* ==========================================================================
+   Walkthrough — scripted UI animations that stand in for a screen recording.
+   Everything lives in a fixed 640x400 canvas that is scaled to fit its
+   container, so every coordinate inside a scene is deterministic.
+   ========================================================================== */
+
+.wt {
+  --wt-w: 640px;
+  --wt-h: 400px;
+  --os-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wt-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #1c1a18;
+  box-shadow: 0 18px 50px rgba(44, 38, 32, 0.16), 0 0 0 1px rgba(44, 38, 32, 0.08);
+}
+
+.wt-canvas {
+  position: relative;
+  width: var(--wt-w);
+  height: var(--wt-h);
+  transform-origin: top left;
+  font-family: var(--os-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.wt-scene {
+  position: absolute;
+  inset: 0;
+  transition: opacity 260ms ease;
+}
+
+.wt-scene.is-fading {
+  opacity: 0;
+}
+
+/* Several mock elements default to flex/inline-flex, which would otherwise
+   beat the [hidden] attribute the timeline toggles. */
+.wt-scene [hidden] {
+  display: none !important;
+}
+
+/* ---- Cursor -------------------------------------------------------------- */
+
+.wt-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 50;
+  pointer-events: none;
+  transform: translate(var(--x, 320px), var(--y, 380px));
+  transition: transform var(--dur, 700ms) cubic-bezier(0.42, 0, 0.24, 1);
+}
+
+.wt-cursor[hidden] {
+  display: none;
+}
+
+.wt-cursor-arrow {
+  position: absolute;
+  top: -2px;
+  left: -3px;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+  transition: transform 120ms ease;
+}
+
+.wt-cursor.is-down .wt-cursor-arrow {
+  transform: scale(0.86);
+}
+
+.wt-cursor-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.28);
+  opacity: 0;
+  transform: scale(0.25);
+}
+
+.wt-cursor.is-down .wt-cursor-ring {
+  animation: wt-ripple 480ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+@keyframes wt-ripple {
+  0% { opacity: 0.95; transform: scale(0.2); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+
+/* ---- Caption bar --------------------------------------------------------- */
+
+.wt-caption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wt-beats {
+  display: flex;
+  gap: 5px;
+  flex: none;
+}
+
+.wt-beat {
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+  background: #ded3bf;
+  transition: background 220ms ease;
+}
+
+.wt-beat.is-on {
+  background: #bf5a2e;
+}
+
+.wt-caption-text {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #5c5344;
+}
+
+.wt-replay {
+  flex: none;
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 4px;
+  margin: -4px;
+  cursor: pointer;
+  color: #9a8f7d;
+  display: inline-flex;
+  border-radius: 6px;
+}
+
+.wt-replay:hover {
+  color: #bf5a2e;
+}
+
+.wt-replay:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 1px;
+}
+
+/* ==========================================================================
+   Shared screen furniture
+   ========================================================================== */
+
+.wt-screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.wt-screen--mac {
+  background:
+    radial-gradient(120% 90% at 20% 0%, #4a6b8a 0%, transparent 60%),
+    linear-gradient(160deg, #2f4257 0%, #1f2b3a 55%, #38394a 100%);
+}
+
+.wt-screen--win {
+  background:
+    radial-gradient(90% 80% at 70% 20%, #2f6fb0 0%, transparent 65%),
+    linear-gradient(150deg, #1b3a5c 0%, #10233b 100%);
+}
+
+.wt-screen--browser {
+  background: linear-gradient(160deg, #3b4a5c 0%, #232c38 100%);
+}
+
+/* macOS menu bar */
+.wt-menubar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 12px;
+  background: rgba(28, 30, 36, 0.55);
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 10.5px;
+}
+
+.wt-menubar b {
+  font-weight: 600;
+}
+
+.wt-menubar-spacer {
+  flex: 1;
+}
+
+/* Windows taskbar */
+.wt-taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(28, 32, 40, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.wt-taskbar i {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  display: block;
+}
+
+.wt-taskbar-clock {
+  position: absolute;
+  right: 12px;
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
+  line-height: 1.15;
+}
+
+/* Traffic lights */
+.wt-lights {
+  display: flex;
+  gap: 6px;
+}
+
+.wt-lights i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: block;
+}
+
+.wt-lights i:nth-child(1) { background: #ff5f57; }
+.wt-lights i:nth-child(2) { background: #febc2e; }
+.wt-lights i:nth-child(3) { background: #28c840; }
+
+/* ==========================================================================
+   macOS System Settings
+   ========================================================================== */
+
+.wt-macwin {
+  position: absolute;
+  left: 48px;
+  top: 44px;
+  width: 544px;
+  height: 320px;
+  display: flex;
+  border-radius: 11px;
+  overflow: hidden;
+  background: #f4f3f7;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(0, 0, 0, 0.3);
+  color: #1d1d1f;
+}
+
+.wt-macside {
+  width: 176px;
+  flex: none;
+  padding: 11px 10px;
+  background: rgba(233, 232, 238, 0.96);
+  border-right: 0.5px solid rgba(0, 0, 0, 0.12);
+}
+
+.wt-search {
+  margin: 12px 0 10px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 7px;
+  font-size: 10.5px;
+  color: #8b8b90;
+}
+
+.wt-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.wt-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: #1d1d1f;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.wt-nav-item.is-selected {
+  background: #3478f6;
+  color: #fff;
+}
+
+.wt-nav-item.is-hot {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.wt-sq {
+  width: 17px;
+  height: 17px;
+  border-radius: 4.5px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.wt-macmain {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  background: #f4f3f7;
+}
+
+.wt-macbar {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.wt-back {
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8b8b90;
+}
+
+.wt-pane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 34px;
+  bottom: 0;
+  padding: 12px 14px;
+  opacity: 0;
+  transform: translateX(10px);
+  pointer-events: none;
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.wt-pane.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+.wt-pane-label {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: #86868b;
+  margin-bottom: 7px;
+}
+
+.wt-list {
+  background: #fff;
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.08);
+}
+
+.wt-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 32px;
+  padding: 0 11px;
+  font-size: 11.5px;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.07);
+  transition: background 180ms ease;
+}
+
+.wt-row:first-child {
+  border-top: none;
+}
+
+.wt-row.is-hot {
+  background: #eef3fd;
+}
+
+.wt-row-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wt-row-value {
+  color: #86868b;
+  font-size: 11px;
+  transition: color 200ms ease;
+}
+
+.wt-row-value.is-on {
+  color: #1d1d1f;
+}
+
+.wt-chev {
+  color: #c4c4c8;
+  display: inline-flex;
+}
+
+.wt-appicon {
+  width: 19px;
+  height: 19px;
+  border-radius: 5px;
+  flex: none;
+  display: block;
+}
+
+.wt-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 11px;
+}
+
+.wt-detail-head .wt-appicon {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+}
+
+.wt-detail-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wt-detail-sub {
+  font-size: 10px;
+  color: #86868b;
+}
+
+.wt-dim {
+  opacity: 0.42;
+  transition: opacity 260ms ease;
+}
+
+.wt-dim.is-live {
+  opacity: 1;
+}
+
+/* macOS switch */
+.wt-switch {
+  width: 30px;
+  height: 18px;
+  border-radius: 9px;
+  background: #d8d8dd;
+  position: relative;
+  flex: none;
+  transition: background 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wt-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wt-switch.is-on {
+  background: #34c759;
+}
+
+.wt-switch.is-on::after {
+  transform: translateX(12px);
+}
+
+.wt-switch--win {
+  border-radius: 9px;
+  background: transparent;
+  border: 1px solid #6b6b6b;
+}
+
+.wt-switch--win::after {
+  background: #5c5c5c;
+  width: 10px;
+  height: 10px;
+  top: 3px;
+  left: 4px;
+  box-shadow: none;
+}
+
+.wt-switch--win.is-on {
+  background: #4cc2ff;
+  border-color: #4cc2ff;
+}
+
+.wt-switch--win.is-on::after {
+  background: #003a4d;
+  transform: translateX(11px);
+}
+
+.wt-seg {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.wt-seg span {
+  font-size: 10px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+  color: #1d1d1f;
+}
+
+.wt-seg span.is-picked {
+  background: #3478f6;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Windows Settings
+   ========================================================================== */
+
+.wt-winwin {
+  position: absolute;
+  left: 52px;
+  top: 34px;
+  width: 536px;
+  height: 306px;
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f3f3f3;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  color: #1b1b1b;
+}
+
+.wt-winside {
+  width: 156px;
+  flex: none;
+  padding: 10px 8px;
+  background: #eaeaea;
+}
+
+.wt-winside .wt-nav-item {
+  border-radius: 4px;
+  font-size: 11px;
+  height: 28px;
+  position: relative;
+}
+
+.wt-winside .wt-nav-item.is-selected {
+  background: #e0e0e0;
+  color: #1b1b1b;
+}
+
+.wt-winside .wt-nav-item.is-selected::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 2px;
+  background: #0067c0;
+}
+
+.wt-winmain {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px;
+  background: #f3f3f3;
+  position: relative;
+}
+
+/* Panes sit below the breadcrumb + title block rather than in normal flow,
+   so the inactive one never pushes the active one out of the window. */
+.wt-winmain .wt-pane {
+  top: 64px;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  padding: 0;
+}
+
+.wt-crumb {
+  font-size: 10.5px;
+  color: #5f5f5f;
+  margin-bottom: 4px;
+}
+
+.wt-h {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.wt-card {
+  background: #fbfbfb;
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  height: 42px;
+  margin-bottom: 8px;
+  font-size: 11.5px;
+  transition: background 180ms ease;
+}
+
+.wt-card.is-hot {
+  background: #f0f0f0;
+}
+
+.wt-card-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.wt-card-sub {
+  display: block;
+  font-size: 9.5px;
+  color: #6b6b6b;
+  margin-top: 1px;
+}
+
+/* ==========================================================================
+   Chrome browser mock (pin + blocked-notifications scenes)
+   ========================================================================== */
+
+.wt-browser {
+  position: absolute;
+  left: 34px;
+  top: 26px;
+  width: 572px;
+  height: 348px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  color: #202124;
+}
+
+.wt-tabstrip {
+  height: 32px;
+  background: #dee1e6;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 0 10px;
+}
+
+.wt-tabstrip .wt-lights {
+  align-self: center;
+  margin-bottom: 0;
+  padding-bottom: 4px;
+}
+
+.wt-tab {
+  height: 25px;
+  min-width: 118px;
+  border-radius: 7px 7px 0 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 10.5px;
+  color: #3c4043;
+}
+
+.wt-toolbar {
+  height: 38px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px;
+  border-bottom: 1px solid #e4e6e9;
+}
+
+.wt-tbicon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #5f6368;
+  transition: background 180ms ease;
+}
+
+.wt-tbicon.is-hot {
+  background: #eef0f2;
+}
+
+.wt-omnibox {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  border-radius: 12px;
+  background: #f1f3f4;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  font-size: 10.5px;
+  color: #5f6368;
+}
+
+.wt-pinned-slot {
+  width: 0;
+  overflow: hidden;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: width 300ms cubic-bezier(0.34, 1.4, 0.5, 1), opacity 260ms ease 90ms;
+}
+
+.wt-pinned-slot.is-shown {
+  width: 24px;
+  opacity: 1;
+}
+
+.wt-pinned-slot img {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.wt-pinned-slot.is-pop img {
+  animation: wt-pop 620ms cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+@keyframes wt-pop {
+  0% { transform: scale(0.3); }
+  55% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
+/* Extensions popover */
+.wt-popover {
+  position: absolute;
+  right: 10px;
+  top: 68px;
+  width: 236px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  padding: 10px 0 8px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  z-index: 20;
+}
+
+.wt-popover.is-open {
+  opacity: 1;
+  transform: none;
+}
+
+.wt-popover-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 0 14px 8px;
+}
+
+.wt-ext-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px;
+  font-size: 11px;
+  transition: background 180ms ease;
+}
+
+.wt-ext-row.is-hot {
+  background: #f1f3f4;
+}
+
+.wt-ext-row img {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.wt-ext-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wt-pin {
+  color: #9aa0a6;
+  display: inline-flex;
+  transition: color 200ms ease, transform 260ms cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.wt-pin.is-pinned {
+  color: #1a73e8;
+  transform: rotate(-45deg);
+}
+
+/* Chrome settings page */
+.wt-page {
+  padding: 16px 20px;
+  height: calc(100% - 70px);
+  overflow: hidden;
+  background: #fff;
+}
+
+.wt-page-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.wt-group-label {
+  font-size: 10.5px;
+  color: #5f6368;
+  margin: 0 0 6px;
+}
+
+.wt-srow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e4e6e9;
+  border-radius: 8px;
+  font-size: 11.5px;
+  background: #fff;
+  margin-bottom: 16px;
+  transition: background 180ms ease, opacity 260ms ease, transform 320ms cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+
+.wt-srow.is-hot {
+  background: #f5f6f7;
+}
+
+.wt-srow.is-gone {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.wt-srow-empty {
+  color: #9aa0a6;
+  font-style: italic;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 240ms ease;
+}
+
+.wt-srow-empty.is-gone {
+  opacity: 0;
+}
+
+.wt-menu {
+  position: absolute;
+  width: 128px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  padding: 5px 0;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+  z-index: 25;
+}
+
+.wt-menu.is-open {
+  opacity: 1;
+  transform: none;
+}
+
+.wt-menu div {
+  padding: 6px 14px;
+  font-size: 11px;
+  transition: background 160ms ease;
+}
+
+.wt-menu div.is-hot {
+  background: #f1f3f4;
+}
+
+/* Chrome new-tab page (pin scene) */
+.wt-newtab {
+  height: calc(100% - 70px);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.wt-newtab-logo svg {
+  width: 46px;
+  height: 46px;
+  display: block;
+  opacity: 0.85;
+}
+
+.wt-newtab-search {
+  width: 300px;
+  height: 30px;
+  border-radius: 15px;
+  background: #f1f3f4;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 14px;
+  font-size: 11px;
+  color: #9aa0a6;
+}
+
+.wt-newtab-tiles {
+  display: flex;
+  gap: 16px;
+}
+
+.wt-newtab-tiles i {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #eef0f2;
+  display: block;
+}
+
+/* ==========================================================================
+   Notification banner scene
+   ========================================================================== */
+
+.wt-ghostwin {
+  position: absolute;
+  left: 62px;
+  top: 62px;
+  width: 430px;
+  height: 268px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(2px);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+.wt-ghostbar {
+  height: 26px;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.wt-ghostbar .wt-lights i {
+  opacity: 0.5;
+}
+
+.wt-ghostbody {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.wt-ghostbody i {
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.16);
+  display: block;
+}
+
+.wt-banner {
+  position: absolute;
+  width: 268px;
+  border-radius: 13px;
+  background: rgba(250, 249, 247, 0.94);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+  padding: 11px 13px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #1d1d1f;
+  opacity: 0;
+  transition: opacity 420ms ease, transform 620ms cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+.wt-banner--mac {
+  right: 14px;
+  top: 30px;
+  transform: translateX(300px);
+}
+
+.wt-banner--win {
+  right: 14px;
+  bottom: 38px;
+  transform: translateY(90px);
+  border-radius: 8px;
+}
+
+.wt-banner.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.wt-banner.is-out {
+  opacity: 0;
+}
+
+.wt-banner--mac.is-out {
+  transform: translateX(300px);
+}
+
+.wt-banner--win.is-out {
+  transform: translateY(90px);
+}
+
+.wt-banner img {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 7px;
+}
+
+.wt-banner-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.wt-banner-body {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #3a3a3c;
+}
+
+.wt-banner-when {
+  position: absolute;
+  top: 11px;
+  right: 13px;
+  font-size: 9.5px;
+  color: #8e8e93;
+}
+
+.wt-hint-arrow {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.55);
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.wt-hint-arrow.is-in {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Reduced motion — hold still, no looping drift.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-cursor {
+    transition-duration: 1ms !important;
+  }
+  .wt-cursor.is-down .wt-cursor-ring {
+    animation-duration: 1ms;
+  }
+}

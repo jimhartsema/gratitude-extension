@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="walkthrough.css" />
   <link rel="stylesheet" href="welcome.css" />
 </head>
 <body>
@@ -19,71 +20,141 @@
     <line x1="18.4" y1="7.1" x2="20" y2="5.5"></line>
   </svg>
 
-  <div class="card">
-    <div class="header">
-      <span class="mark" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#bf5a2e" stroke-width="1.6" stroke-linecap="round">
-          <circle cx="12" cy="13.5" r="4"></circle>
-          <line x1="12" y1="3.2" x2="12" y2="6"></line>
-          <line x1="3.8" y1="13.5" x2="1.5" y2="13.5"></line>
-          <line x1="22.5" y1="13.5" x2="20.2" y2="13.5"></line>
-          <line x1="5.6" y1="7.1" x2="4" y2="5.5"></line>
-          <line x1="18.4" y1="7.1" x2="20" y2="5.5"></line>
-        </svg>
-      </span>
-      <span class="wordmark">Daily Gratitude</span>
-    </div>
-
-    <div class="rule"></div>
-
-    <h1 class="heading" id="heading">Welcome to Daily Gratitude</h1>
-    <p class="subtext" id="subtext">You'll get one gentle reminder every hour. Let's make sure it can reach you.</p>
-
-    <button class="primary-btn" id="test-btn" type="button">Send a test notification</button>
-
-    <p class="status-line" id="status-line" hidden>Sent — look for a notification in the corner of your screen.</p>
-    <button class="text-link" id="not-seen-link" type="button" hidden>Didn't see it?</button>
-
-    <div class="fix-section" id="fix-section" hidden>
-      <p class="chrome-note" id="chrome-note" hidden>
-        Chrome has notifications turned off for this extension. Go to
-        <code>chrome://settings/content/notifications</code>, find Daily Gratitude under
-        "Not allowed to send notifications," and switch it to allowed.
-      </p>
-
-      <p class="fix-heading">Also check that your computer allows Chrome to send notifications:</p>
-
-      <div class="platform-tabs">
-        <button class="platform-tab" id="tab-mac" type="button" data-platform="mac">Mac</button>
-        <button class="platform-tab" id="tab-win" type="button" data-platform="win">Windows</button>
+  <main class="shell">
+    <!-- ================= Left rail ================= -->
+    <section class="rail">
+      <div class="header">
+        <span class="mark" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#bf5a2e" stroke-width="1.6" stroke-linecap="round">
+            <circle cx="12" cy="13.5" r="4"></circle>
+            <line x1="12" y1="3.2" x2="12" y2="6"></line>
+            <line x1="3.8" y1="13.5" x2="1.5" y2="13.5"></line>
+            <line x1="22.5" y1="13.5" x2="20.2" y2="13.5"></line>
+            <line x1="5.6" y1="7.1" x2="4" y2="5.5"></line>
+            <line x1="18.4" y1="7.1" x2="20" y2="5.5"></line>
+          </svg>
+        </span>
+        <span class="wordmark">Daily Gratitude</span>
       </div>
 
-      <ol class="steps" id="mac-steps">
-        <li>Open <strong>System Settings</strong> → <strong>Notifications</strong></li>
-        <li>Find <strong>Google Chrome</strong> in the list</li>
-        <li>Make sure notifications are turned <strong>on</strong></li>
-      </ol>
+      <div class="rule"></div>
 
-      <ol class="steps" id="win-steps" hidden>
-        <li>Open <strong>Settings</strong> → <strong>System</strong> → <strong>Notifications</strong></li>
-        <li>Find <strong>Google Chrome</strong> in the list</li>
-        <li>Make sure notifications are turned <strong>on</strong></li>
-      </ol>
-    </div>
+      <div class="panes">
+        <!-- ---- 1. Intro ---- -->
+        <div class="pane" data-pane="intro">
+          <p class="eyebrow">Setup · 1 of 3</p>
+          <h1 class="heading">One kind sentence, every hour.</h1>
+          <p class="subtext">
+            Daily Gratitude sends a single gentle reminder each hour — no feed, no streaks,
+            nothing to keep up with. It takes about a minute to make sure it can reach you.
+          </p>
+          <button class="primary-btn" data-go="test" type="button">Set up notifications</button>
+          <button class="text-link" data-skip type="button">I'll do this later</button>
+        </div>
 
-    <div class="pin-tip" id="pin-tip" hidden>
-      <p class="pin-tip-heading">One more thing — pin it for one-click access:</p>
-      <ol class="steps">
-        <li>Click the puzzle-piece <strong>Extensions</strong> icon at the top right of Chrome</li>
-        <li>Find <strong>Daily Gratitude</strong> in the list</li>
-        <li>Click the pin icon next to it</li>
-      </ol>
-    </div>
+        <!-- ---- 2. Test ---- -->
+        <div class="pane" data-pane="test">
+          <p class="eyebrow">Setup · 2 of 3</p>
+          <h1 class="heading">Let's make sure you can see it.</h1>
+          <p class="subtext">
+            We'll send one test reminder right now. Watch the corner of your screen —
+            it looks like the notification playing to the side.
+          </p>
 
-    <p class="footnote">You can come back to this page anytime by clicking "test notification" in the extension popup.</p>
-  </div>
+          <button class="primary-btn" data-test-btn type="button">Send a test notification</button>
+
+          <div class="answer" data-answer hidden>
+            <p class="answer-q">Did it show up?</p>
+            <div class="answer-row">
+              <button class="choice choice--yes" data-saw="yes" type="button">Yes, I saw it</button>
+              <button class="choice" data-saw="no" type="button">No, nothing appeared</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- 3. Fix ---- -->
+        <div class="pane" data-pane="fix">
+          <p class="eyebrow">Setup · 2 of 3</p>
+          <h1 class="heading">Your computer is holding them back.</h1>
+          <p class="subtext">
+            Almost always this is the operating system muting Chrome, not the extension.
+            Follow along with the walkthrough — it loops.
+          </p>
+
+          <div class="tabs" role="tablist" aria-label="Operating system">
+            <button class="tab" data-platform="mac" role="tab" type="button">macOS</button>
+            <button class="tab" data-platform="win" role="tab" type="button">Windows</button>
+          </div>
+
+          <ol class="steps" data-steps="mac">
+            <li><strong>System Settings</strong> → <strong>Notifications</strong></li>
+            <li>Find <strong>Google Chrome</strong> in the app list</li>
+            <li>Turn <strong>Allow notifications</strong> on</li>
+          </ol>
+
+          <ol class="steps" data-steps="win" hidden>
+            <li><strong>Settings</strong> → <strong>System</strong> → <strong>Notifications</strong></li>
+            <li>Find <strong>Google Chrome</strong> in the app list</li>
+            <li>Switch it <strong>on</strong></li>
+          </ol>
+
+          <div class="callout" data-chrome-note hidden>
+            <p class="callout-title">Chrome is also blocking this extension.</p>
+            <p class="callout-body">Open <code>chrome://settings/content/notifications</code>, find Daily
+              Gratitude under “Not allowed to send notifications,” and switch it to Allow.</p>
+            <div class="callout-row">
+              <button class="ghost-btn" data-copy="chrome://settings/content/notifications" type="button">Copy address</button>
+              <button class="ghost-btn" data-scene="blocked" type="button">Show me how</button>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="primary-btn" data-test-btn type="button">Send another test</button>
+            <button class="secondary-btn" data-go="pin" type="button">It works now</button>
+          </div>
+        </div>
+
+        <!-- ---- 4. Pin ---- -->
+        <div class="pane" data-pane="pin">
+          <p class="eyebrow">Setup · 3 of 3</p>
+          <h1 class="heading">Keep it one click away.</h1>
+          <p class="subtext">
+            Pin Daily Gratitude to your toolbar and you can pull up a sentence — or today's
+            journal page — whenever you want one, without waiting for the hour.
+          </p>
+          <button class="primary-btn" data-go="done" type="button">Pinned it</button>
+          <button class="text-link" data-go="done" type="button">Skip for now</button>
+        </div>
+
+        <!-- ---- 5. Done ---- -->
+        <div class="pane" data-pane="done">
+          <p class="eyebrow">All set</p>
+          <h1 class="heading">You're ready.</h1>
+          <p class="subtext">
+            The first reminder arrives within the hour. Mornings have a page of their own —
+            three short questions, five minutes.
+          </p>
+          <button class="primary-btn" data-open-journal type="button">Open today's page</button>
+          <button class="text-link" data-test-btn type="button">Send one more test</button>
+        </div>
+      </div>
+
+      <div class="progress" data-progress hidden>
+        <button class="dot" data-dot="intro" type="button" aria-label="Welcome"></button>
+        <button class="dot" data-dot="test" type="button" aria-label="Notifications"></button>
+        <button class="dot" data-dot="pin" type="button" aria-label="Pin to toolbar"></button>
+        <button class="dot" data-dot="done" type="button" aria-label="Done"></button>
+      </div>
+    </section>
+
+    <!-- ================= Right stage ================= -->
+    <section class="stage">
+      <div id="walkthrough"></div>
+    </section>
+  </main>
 
   <script src="notify.js"></script>
+  <script src="walkthrough.js"></script>
   <script src="welcome.js"></script>
 </body>
 </html>

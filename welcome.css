@@ -14,9 +14,9 @@ body {
   justify-content: center;
   background: #f0ebe0;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  padding: 40px 20px;
+  padding: 40px 24px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .bg-mark {
@@ -29,23 +29,41 @@ body {
   z-index: 0;
 }
 
-.card {
+/* ==========================================================================
+   Shell — rail on the left, animated stage on the right
+   ========================================================================== */
+
+.shell {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 460px;
-  background: #f7f2e8;
-  border-radius: 18px;
-  padding: 40px 36px;
-  box-shadow: 0 12px 40px rgba(44, 38, 32, 0.08);
+  max-width: 1060px;
+  display: grid;
+  grid-template-columns: minmax(320px, 400px) 1fr;
+  gap: 34px;
+  align-items: center;
 }
 
-/* ---- Header ---- */
+.rail {
+  background: #f7f2e8;
+  border-radius: 18px;
+  padding: 34px 32px 28px;
+  box-shadow: 0 12px 40px rgba(44, 38, 32, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.stage {
+  min-width: 0;
+}
+
+/* ---- Header -------------------------------------------------------------- */
+
 .header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .mark {
@@ -63,40 +81,75 @@ body {
 .rule {
   height: 1px;
   background: #e3d9c6;
-  margin-bottom: 26px;
+  margin-bottom: 24px;
 }
 
-/* ---- Heading ---- */
+/* ---- Panes --------------------------------------------------------------- */
+
+.panes {
+  position: relative;
+  flex: 1;
+}
+
+.pane {
+  display: none;
+}
+
+.pane.is-active {
+  display: block;
+  animation: pane-in 340ms cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+@keyframes pane-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a2937c;
+  margin: 0 0 12px;
+}
+
 .heading {
   font-family: "Newsreader", Georgia, serif;
   font-weight: 500;
-  font-size: 26px;
-  line-height: 1.25;
+  font-size: 29px;
+  line-height: 1.2;
   color: #2c2620;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 
 .subtext {
   font-size: 13.5px;
-  line-height: 1.6;
+  line-height: 1.65;
   color: #5c5344;
-  margin: 0 0 28px;
+  margin: 0 0 24px;
 }
 
-/* ---- Primary button ---- */
-.primary-btn {
+/* ---- Buttons ------------------------------------------------------------- */
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn,
+.choice {
   appearance: none;
-  border: none;
   cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  border-radius: 10px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.primary-btn {
+  border: none;
   background: #bf5a2e;
   color: #f7f2e8;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 13px;
   letter-spacing: 0.02em;
   padding: 13px 20px;
-  border-radius: 10px;
   width: 100%;
-  transition: background 0.15s ease, opacity 0.15s ease;
 }
 
 .primary-btn:hover {
@@ -104,119 +157,252 @@ body {
 }
 
 .primary-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.65;
   cursor: default;
 }
 
-.primary-btn:focus-visible {
-  outline: 2px solid #e0b89f;
-  outline-offset: 3px;
+.secondary-btn {
+  border: 1px solid #ddd0b8;
+  background: transparent;
+  color: #7a6f5e;
+  font-size: 13px;
+  padding: 13px 18px;
+  white-space: nowrap;
 }
 
-/* ---- Status / text link ---- */
-.status-line {
-  font-size: 12.5px;
-  color: #5c5344;
-  margin: 16px 0 0;
+.secondary-btn:hover {
+  border-color: #bf5a2e;
+  color: #bf5a2e;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.btn-row .primary-btn {
+  width: auto;
+  flex: 1;
 }
 
 .text-link {
   appearance: none;
   border: none;
   background: none;
-  padding: 0;
+  padding: 6px 0 0;
   margin: 8px 0 0;
   cursor: pointer;
+  display: block;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 12.5px;
-  color: #bf5a2e;
+  font-size: 12px;
+  color: #9a8f7d;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-/* ---- Fix section ---- */
-.fix-section {
+.text-link:hover {
+  color: #bf5a2e;
+}
+
+.primary-btn:focus-visible,
+.secondary-btn:focus-visible,
+.ghost-btn:focus-visible,
+.choice:focus-visible,
+.text-link:focus-visible,
+.tab:focus-visible,
+.dot:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 3px;
+}
+
+/* ---- "Did it show up?" branch -------------------------------------------- */
+
+.answer {
   margin-top: 22px;
-  padding-top: 22px;
+  padding-top: 20px;
   border-top: 1px solid #e3d9c6;
+  animation: pane-in 320ms cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
-.chrome-note {
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: #8a3a1a;
-  background: #f3ded2;
-  border-radius: 8px;
-  padding: 12px 14px;
-  margin: 0 0 18px;
-}
-
-.chrome-note code {
-  font-size: 11.5px;
-  background: rgba(0, 0, 0, 0.06);
-  padding: 1px 4px;
-  border-radius: 4px;
-}
-
-.fix-heading {
+.answer-q {
   font-size: 12.5px;
   color: #5c5344;
   margin: 0 0 12px;
 }
 
-.platform-tabs {
+.answer-row {
   display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
 }
 
-.platform-tab {
+.choice {
+  flex: 1;
+  border: 1px solid #ddd0b8;
+  background: #fbf8f1;
+  color: #5c5344;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 12px 10px;
+}
+
+.choice:hover {
+  border-color: #bf5a2e;
+  color: #bf5a2e;
+}
+
+.choice--yes {
+  background: #f3ded2;
+  border-color: #e0b89f;
+  color: #a94e26;
+}
+
+/* ---- Platform tabs ------------------------------------------------------- */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.tab {
   appearance: none;
   cursor: pointer;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 11.5px;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: #7a6f5e;
   background: #ece4d2;
   border: 1px solid transparent;
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 7px 16px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.platform-tab.active {
+.tab.is-active {
   background: #f3ded2;
   color: #bf5a2e;
   border-color: #e0b89f;
 }
 
+/* ---- Steps --------------------------------------------------------------- */
+
 .steps {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 20px;
   font-size: 13px;
-  line-height: 1.9;
+  line-height: 1.95;
   color: #2c2620;
 }
 
-.pin-tip {
-  margin-top: 22px;
-  padding: 14px 16px;
-  background: #ece4d2;
+.steps strong {
+  font-weight: 600;
+}
+
+/* ---- Callout ------------------------------------------------------------- */
+
+.callout {
+  margin-top: 20px;
+  background: #f3ded2;
   border-radius: 10px;
+  padding: 14px 16px;
 }
 
-.pin-tip-heading {
+.callout-title {
   font-size: 12.5px;
-  color: #5c5344;
-  margin: 0 0 12px;
+  color: #8a3a1a;
+  font-weight: 600;
+  margin: 0 0 6px;
 }
 
-.pin-tip .steps {
+.callout-body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #8a3a1a;
   margin: 0;
 }
 
-.footnote {
+.callout-body code {
   font-size: 11px;
-  color: #9a8f7d;
-  margin: 26px 0 0;
+  background: rgba(0, 0, 0, 0.07);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.callout-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ghost-btn {
+  border: 1px solid rgba(138, 58, 26, 0.3);
+  background: transparent;
+  color: #8a3a1a;
+  font-size: 11.5px;
+  padding: 7px 12px;
+  border-radius: 8px;
+}
+
+.ghost-btn:hover {
+  background: rgba(138, 58, 26, 0.08);
+}
+
+/* ---- Progress dots ------------------------------------------------------- */
+
+.progress {
+  display: flex;
+  gap: 8px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #e3d9c6;
+}
+
+.dot {
+  appearance: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 26px;
+  height: 4px;
+  border-radius: 2px;
+  background: #e3d9c6;
+  transition: background 0.2s ease;
+}
+
+.dot.is-done {
+  background: #d9bda6;
+}
+
+.dot.is-current {
+  background: #bf5a2e;
+}
+
+/* ==========================================================================
+   Narrow layout — stage moves above the rail
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  body {
+    padding: 28px 18px;
+    align-items: flex-start;
+  }
+
+  .shell {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+    gap: 22px;
+  }
+
+  .stage {
+    order: -1;
+  }
+
+  .rail {
+    padding: 28px 24px 24px;
+  }
+
+  .heading {
+    font-size: 25px;
+  }
 }

@@ -35,7 +35,14 @@ Just click **Add to Chrome** — done in 10 seconds.
 
 ## ⚠️ Important: allow Chrome to send notifications
 
-The reminders won't show up unless your computer allows Chrome to send notifications. Here's how to check:
+The reminders won't show up unless your computer allows Chrome to send notifications.
+
+**The extension walks you through this.** On install it opens a guided setup that sends a
+test reminder and — if nothing appears — plays a looping, animated walkthrough of the exact
+clicks to make, mouse pointer and all, for your operating system. You can reopen it any time
+from **test notification** in the popup.
+
+If you'd rather read the steps:
 
 **On Mac:**
 1. Open **System Settings** → **Notifications**
