@@ -48,94 +48,142 @@ body {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #7a6f5e;
+  color: #8a5537;
+}
+
+/* ---- Warm glass: a frosted panel over a lit paper ground ----
+   The reference this came from was navy and neon; the appeal was the
+   material, not the colour, so the same frosted panel and lit knob are
+   rendered in terracotta and cream. All CSS gradients — no images. */
+.glasswrap {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #f3ded2 0%, #e9d3c4 45%, #efe2d2 100%);
+}
+
+.glasswrap::before,
+.glasswrap::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.glasswrap::before {
+  width: 190px;
+  height: 190px;
+  top: -62px;
+  right: -42px;
+  background: radial-gradient(circle, #e8955f 0%, rgba(232, 149, 95, 0) 70%);
+}
+
+.glasswrap::after {
+  width: 170px;
+  height: 170px;
+  bottom: -72px;
+  left: -52px;
+  background: radial-gradient(circle, #c98b6a 0%, rgba(201, 139, 106, 0) 70%);
+}
+
+.pad {
+  position: relative;
+  padding: 22px 24px 4px;
 }
 
 /* ---- Today ---- */
 .today-date {
   font-family: "Newsreader", Georgia, serif;
-  font-size: 21px;
+  font-size: 20px;
   line-height: 1.2;
-  color: #2c2620;
+  color: #4a2c1a;
   margin: 0 0 3px;
 }
 
 .today-theme {
-  font-size: 9.5px;
+  font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #bf5a2e;
+  color: #a5502a;
   margin: 0;
 }
 
-/* Before writing — one of today's real questions, as a taste of the page. */
-.taste {
-  font-family: "Newsreader", Georgia, serif;
-  font-size: 16px;
-  line-height: 1.4;
-  color: #4a4136;
-  margin: 18px 0 0;
-  text-wrap: pretty;
-}
-
-/* After writing — their own first line, quoted back. */
-.own-line {
-  font-family: "Newsreader", Georgia, serif;
-  font-size: 16px;
-  line-height: 1.45;
-  color: #2c2620;
-  margin: 18px 0 7px;
-  padding-left: 13px;
-  border-left: 2px solid #e0b89f;
-  text-wrap: pretty;
-  overflow-wrap: anywhere;
-}
-
-.own-attrib {
-  font-family: "Newsreader", Georgia, serif;
-  font-style: italic;
-  font-size: 12px;
-  color: #9a8f7d;
-  margin: 0 0 0 13px;
-}
-
-/* ---- Journal doorway ---- */
-.journal-link {
+/* ---- The one control ---- */
+.glass {
+  position: relative;
   appearance: none;
-  border: none;
-  background: none;
-  padding: 0 0 1px;
-  margin: 17px 0 0;
   cursor: pointer;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 7px;
-  font-family: "Newsreader", Georgia, serif;
-  font-style: italic;
-  font-size: 16px;
-  color: #bf5a2e;
-  border-bottom: 1px solid #e0b89f;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: calc(100% - 48px);
+  margin: 20px 24px 22px;
+  padding: 16px 18px;
+  text-align: left;
+  border-radius: 16px;
+  background: rgba(255, 252, 247, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 8px 22px rgba(120, 72, 44, 0.18);
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
-.journal-link:hover {
-  color: #a94e26;
-  border-bottom-color: #bf5a2e;
+.glass:hover {
+  background: rgba(255, 253, 250, 0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 26px rgba(120, 72, 44, 0.22);
 }
 
-.journal-link-arrow {
-  font-style: normal;
-  transition: transform 0.18s ease;
+.glass:active {
+  transform: translateY(1px);
 }
 
-.journal-link:hover .journal-link-arrow {
-  transform: translateX(3px);
-}
-
-.journal-link:focus-visible {
-  outline: 2px solid #e0b89f;
+.glass:focus-visible {
+  outline: 2px solid #a5502a;
   outline-offset: 3px;
-  border-radius: 2px;
+}
+
+/* Lit knob — an icon, deliberately not something that looks like it slides.
+   The reference was a two-state toggle; opening a page is one-way. */
+.knob {
+  position: relative;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 32% 28%, #ffffff 0%, #f6d9c4 38%, #d98a56 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    inset 0 -3px 8px rgba(150, 80, 40, 0.35),
+    0 4px 12px rgba(150, 80, 40, 0.32);
+}
+
+.glass-text {
+  min-width: 0;
+}
+
+.glass-eyebrow {
+  display: block;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9a6b4c;
+  margin-bottom: 4px;
+}
+
+.journal-link-text {
+  display: block;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 17px;
+  line-height: 1.25;
+  color: #5c3a24;
+  text-wrap: pretty;
 }
 
 /* ---- Foot: week rhythm + settings disclosure ---- */
@@ -150,7 +198,7 @@ body {
 .week {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .week i {
@@ -166,11 +214,11 @@ body {
 }
 
 .week-label {
-  font-size: 9px;
-  letter-spacing: 0.1em;
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #a2967f;
-  margin-left: 6px;
+  margin-left: 7px;
   white-space: nowrap;
 }
 
@@ -182,8 +230,8 @@ body {
   margin: 0;
   cursor: pointer;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.1em;
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #a2967f;
   white-space: nowrap;
@@ -339,20 +387,14 @@ body {
 .header { animation: fadeUp 300ms ease-out both; }
 .today-date,
 .today-theme { animation: fadeUp 320ms ease-out both; animation-delay: 60ms; }
-.taste,
-.own-line,
-.own-attrib { animation: fadeUp 340ms ease-out both; animation-delay: 130ms; }
-.journal-link { animation: fadeUp 320ms ease-out both; animation-delay: 200ms; }
-.foot { animation: fadeUp 300ms ease-out both; animation-delay: 260ms; }
+.glass { animation: fadeUp 340ms ease-out both; animation-delay: 140ms; }
+.foot { animation: fadeUp 300ms ease-out both; animation-delay: 220ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .header,
   .today-date,
   .today-theme,
-  .taste,
-  .own-line,
-  .own-attrib,
-  .journal-link,
+  .glass,
   .foot,
   .settings {
     animation: none;
