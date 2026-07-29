@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Daily Gratitude Journal & Hourly Reminders",
-  "version": "1.4",
+  "version": "2.0",
   "description": "One kind reminder every hour, plus a three-question gratitude journal for your mornings. No streaks, no pressure.",
   "permissions": [
     "alarms",
