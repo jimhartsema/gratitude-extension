@@ -22,27 +22,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('today-theme').textContent = themeForDateKey(todayKey);
 
   // ---- Written or not ----
+  // One control, two states. The eyebrow carries the status so the sentence
+  // underneath stays a plain instruction.
   const entry = await getJournalEntry(todayKey);
   const complete = isEntryComplete(entry);
-  const firstLine = (entry.grateful || []).find((v) => v && v.trim());
 
-  const taste = document.getElementById('taste');
-  const ownLine = document.getElementById('own-line');
-  const ownAttrib = document.getElementById('own-attrib');
   const journalLink = document.getElementById('journal-link');
+  const eyebrow = document.getElementById('journal-eyebrow');
   const journalText = journalLink.querySelector('.journal-link-text');
 
-  if (complete && firstLine) {
-    ownLine.textContent = firstLine.trim();
-    ownLine.hidden = false;
-    ownAttrib.hidden = false;
-    journalText.textContent = "Reread today's page";
+  if (complete) {
+    eyebrow.textContent = 'Written today ✓';
+    journalText.textContent = "Reread your gratitude journal";
   } else {
-    // A taste of the page rather than a generic line — it is one of the three
-    // questions actually waiting on the other side of the link.
-    taste.textContent = `“${questionsForDateKey(todayKey)[0]}”`;
-    taste.hidden = false;
-    journalText.textContent = complete ? "Reread today's page" : "Write today's page";
+    eyebrow.textContent = "Today's page";
+    journalText.textContent = "Write your gratitude journal";
   }
 
   journalLink.addEventListener('click', () => {
@@ -79,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const label = document.createElement('span');
     label.className = 'week-label';
-    label.textContent = 'this week';
+    label.textContent = "this week's progress";
     week.appendChild(label);
     week.setAttribute('aria-label', `${written} of ${WEEK_DAYS} days written this week`);
   })();
