@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Daily Gratitude — Hourly Mindfulness Reminders",
+  "name": "Daily Gratitude Journal & Hourly Reminders",
   "version": "1.4",
-  "description": "A gentle mindfulness reminder. One uplifting gratitude message, every hour.",
+  "description": "One kind reminder every hour, plus a three-question gratitude journal for your mornings. No streaks, no pressure.",
   "permissions": [
     "alarms",
     "notifications",
