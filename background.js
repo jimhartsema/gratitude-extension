@@ -1,10 +1,10 @@
 importScripts('sentences.js', 'journal-data.js');
 
 const ALARM_NAME = 'gratitude-reminder';
-const JOURNAL_ALARM_NAME = 'journal-daily-check';
-const JOURNAL_NOTIFICATION_ID = 'journal-reminder';
+const JOURNAL_ALARM_NAME = 'journal-badge-check';
 const JOURNAL_BADGE_COLOR = '#bf5a2e';
 const MORNING_WINDOW_START_HOUR = 5;
+const TEST_NOTIFICATION_PREFIX = 'gratitude-test-';
 
 function setupAlarms() {
   chrome.alarms.get(ALARM_NAME, (alarm) => {
@@ -33,52 +33,41 @@ async function updateBadge() {
   chrome.action.setBadgeText({ text: complete ? '' : '•' });
 }
 
-// One gentle nudge per day, and only once the local morning has started —
-// never at 00:30 for a night-owl user. Max one notification, guarded by
-// lastJournalNudgeDate.
-async function maybeSendJournalNudge() {
-  // The popup's toggle governs every notification this extension sends — the
-  // hourly sentence and this one alike. The badge is not a notification and
-  // deliberately keeps working either way.
-  const { enabled = true } = await chrome.storage.sync.get('enabled');
-  if (!enabled) return;
-
+// The journal reminder rides the hourly sentence rather than arriving as a
+// notification of its own: one fewer interruption a day, and the ask turns up
+// wrapped in something pleasant instead of as a bare task prompt.
+//
+// Returns the sub-line to attach, or null. Consumes the day's allowance when
+// it returns a line, so the reminder appears on exactly one sentence a day —
+// never on all sixteen, which would read as nagging rather than a nudge.
+async function claimJournalReminderLine() {
   const todayKey = getLocalDateKey();
-  const entry = await getJournalEntry(todayKey);
-  if (isEntryComplete(entry)) return;
 
-  if (new Date().getHours() < MORNING_WINDOW_START_HOUR) return;
+  const entry = await getJournalEntry(todayKey);
+  if (isEntryComplete(entry)) return null;
+
+  // Never before the local morning has started, so a night owl at 00:30 is
+  // not told their page is blank.
+  if (new Date().getHours() < MORNING_WINDOW_START_HOUR) return null;
 
   const { lastJournalNudgeDate } = await chrome.storage.local.get('lastJournalNudgeDate');
-  if (lastJournalNudgeDate === todayKey) return;
-
-  chrome.notifications.create(JOURNAL_NOTIFICATION_ID, {
-    type: 'basic',
-    iconUrl: 'icons/icon48.png',
-    title: 'Your page is ready',
-    message: 'Three questions, five minutes. Start your day.',
-    requireInteraction: false
-  });
+  if (lastJournalNudgeDate === todayKey) return null;
 
   await chrome.storage.local.set({ lastJournalNudgeDate: todayKey });
+  return 'Today’s page is still blank — three questions, five minutes.';
 }
 
 chrome.runtime.onInstalled.addListener((details) => {
   setupAlarms();
   updateBadge();
   if (details.reason === 'install') {
-    // Skip the journal nudge on first install — the welcome tab already
-    // covers onboarding; a second prompt at the same moment is noise.
     chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
-  } else {
-    maybeSendJournalNudge();
   }
 });
 
 chrome.runtime.onStartup.addListener(() => {
   setupAlarms();
   updateBadge();
-  maybeSendJournalNudge();
 });
 
 // Runs on every service worker wake, not just onStartup/onInstalled.
@@ -87,7 +76,6 @@ updateBadge();
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === JOURNAL_ALARM_NAME) {
     updateBadge();
-    maybeSendJournalNudge();
     return;
   }
 
@@ -100,20 +88,33 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (windows.length === 0) return;
 
   const sentence = SENTENCES[Math.floor(Math.random() * SENTENCES.length)];
+  const reminder = await claimJournalReminderLine();
 
-  chrome.notifications.create({
+  const options = {
     type: 'basic',
     iconUrl: 'icons/icon48.png',
     title: 'A little reminder for you',
     message: sentence,
-    requireInteraction: false
-  });
+    // The plain sentences ask nothing, so they slide away on their own. The
+    // one a day that carries the journal line stays until it is dealt with —
+    // an auto-dismissing banner drops into Notification Center after a few
+    // seconds, and a click from there does not reliably reach onClicked.
+    requireInteraction: !!reminder
+  };
+  // A smaller, greyed line under the sentence — present on at most one
+  // notification a day, and only while today's page is unwritten.
+  if (reminder) options.contextMessage = reminder;
+
+  chrome.notifications.create(options);
 });
 
+// Every reminder opens the journal. Previously only the standalone nudge did,
+// so sixteen sentences a day were dead ends. The setup test is excluded — it
+// exists to prove notifications arrive, not to send anyone anywhere.
 chrome.notifications.onClicked.addListener((notificationId) => {
-  if (notificationId !== JOURNAL_NOTIFICATION_ID) return;
-  chrome.tabs.create({ url: chrome.runtime.getURL('journal.html') });
   chrome.notifications.clear(notificationId);
+  if (String(notificationId).startsWith(TEST_NOTIFICATION_PREFIX)) return;
+  chrome.tabs.create({ url: chrome.runtime.getURL('journal.html') });
 });
 
 // journal.js writes directly to chrome.storage.local; this listener wakes

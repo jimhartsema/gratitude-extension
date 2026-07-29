@@ -21,22 +21,23 @@ body {
   border-radius: 18px;
 }
 
-/* The rule runs full-bleed, so padding lives on an inner wrapper. */
 .pad {
   padding: 22px 24px 20px;
-}
-
-.rule {
-  height: 1px;
-  background: #e3d9c6;
 }
 
 /* ---- Header ---- */
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 9px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
 }
 
 .mark {
@@ -48,180 +49,157 @@ body {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #8a5537;
-}
-
-/* ---- Warm glass: a frosted panel over a lit paper ground ----
-   The reference this came from was navy and neon; the appeal was the
-   material, not the colour, so the same frosted panel and lit knob are
-   rendered in terracotta and cream. All CSS gradients — no images. */
-.glasswrap {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(150deg, #f3ded2 0%, #e9d3c4 45%, #efe2d2 100%);
-}
-
-.glasswrap::before,
-.glasswrap::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.glasswrap::before {
-  width: 190px;
-  height: 190px;
-  top: -62px;
-  right: -42px;
-  background: radial-gradient(circle, #e8955f 0%, rgba(232, 149, 95, 0) 70%);
-}
-
-.glasswrap::after {
-  width: 170px;
-  height: 170px;
-  bottom: -72px;
-  left: -52px;
-  background: radial-gradient(circle, #c98b6a 0%, rgba(201, 139, 106, 0) 70%);
-}
-
-.pad {
-  position: relative;
-  padding: 22px 24px 4px;
+  color: #7a6f5e;
 }
 
 /* ---- Today ---- */
 .today-date {
   font-family: "Newsreader", Georgia, serif;
-  font-size: 20px;
+  font-size: 21px;
   line-height: 1.2;
-  color: #4a2c1a;
+  color: #2c2620;
   margin: 0 0 3px;
 }
 
 .today-theme {
-  font-size: 9px;
+  font-size: 9.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #a5502a;
-  margin: 0;
+  color: #bf5a2e;
+  margin: 0 0 20px;
 }
 
-/* ---- The one control ---- */
-.glass {
-  position: relative;
-  appearance: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: calc(100% - 48px);
-  margin: 20px 24px 22px;
-  padding: 16px 18px;
-  text-align: left;
-  border-radius: 16px;
-  background: rgba(255, 252, 247, 0.42);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    0 8px 22px rgba(120, 72, 44, 0.18);
-  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-}
-
-.glass:hover {
-  background: rgba(255, 253, 250, 0.58);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 10px 26px rgba(120, 72, 44, 0.22);
-}
-
-.glass:active {
-  transform: translateY(1px);
-}
-
-.glass:focus-visible {
-  outline: 2px solid #a5502a;
-  outline-offset: 3px;
-}
-
-/* Lit knob — an icon, deliberately not something that looks like it slides.
-   The reference was a two-state toggle; opening a page is one-way. */
-.knob {
-  position: relative;
-  flex: none;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at 32% 28%, #ffffff 0%, #f6d9c4 38%, #d98a56 100%);
-  box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.9),
-    inset 0 -3px 8px rgba(150, 80, 40, 0.35),
-    0 4px 12px rgba(150, 80, 40, 0.32);
-}
-
-.glass-text {
-  min-width: 0;
-}
-
-.glass-eyebrow {
-  display: block;
-  font-size: 8.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #9a6b4c;
-  margin-bottom: 4px;
-}
-
-.journal-link-text {
-  display: block;
-  font-family: "Newsreader", Georgia, serif;
-  font-size: 17px;
-  line-height: 1.25;
-  color: #5c3a24;
-  text-wrap: pretty;
-}
-
-/* ---- Foot: week rhythm + settings disclosure ---- */
-.foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 24px 15px;
-}
-
+/* ---- This week ---- */
 .week {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 9px;
+  margin-bottom: 8px;
 }
 
 .week i {
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #e0d6c2;
   display: block;
+  flex: none;
 }
 
 .week i.is-written {
   background: #bf5a2e;
 }
 
-.week-label {
-  font-size: 8.5px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #a2967f;
-  margin-left: 7px;
-  white-space: nowrap;
+/* Today, still unwritten: an open ring waiting to be filled. */
+.week i.is-today {
+  background: none;
+  border: 2px solid #bf5a2e;
 }
 
+.week i.is-today.is-written {
+  background: #bf5a2e;
+  border-color: #bf5a2e;
+}
+
+.week-labels {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2967f;
+}
+
+.week-labels span {
+  width: 10px;
+  flex: none;
+  text-align: center;
+}
+
+.week-labels span.is-today {
+  color: #bf5a2e;
+}
+
+/* ---- Journal call to action ---- */
+.cta-wrap {
+  padding: 0 24px 22px;
+}
+
+.journal-cta {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  background: #bf5a2e;
+  padding: 15px 16px;
+  border-radius: 13px;
+  box-shadow: 0 6px 16px rgba(191, 90, 46, 0.28);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.journal-cta:hover {
+  background: #a94e26;
+  box-shadow: 0 8px 20px rgba(191, 90, 46, 0.34);
+}
+
+.journal-cta:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(191, 90, 46, 0.28);
+}
+
+.journal-cta:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 3px;
+}
+
+.cta-text {
+  display: block;
+  min-width: 0;
+}
+
+.cta-title {
+  display: block;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 19px;
+  line-height: 1.25;
+  color: #fdf6ec;
+  text-wrap: pretty;
+}
+
+.cta-sub {
+  display: block;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(253, 246, 236, 0.62);
+  margin-top: 7px;
+}
+
+.cta-arrow {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(253, 246, 236, 0.16);
+  color: #fdf6ec;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease;
+}
+
+.journal-cta:hover .cta-arrow {
+  transform: translateX(3px);
+}
+
+/* ---- Settings disclosure ---- */
 .settings-toggle {
   appearance: none;
   border: none;
@@ -230,8 +208,8 @@ body {
   margin: 0;
   cursor: pointer;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 8.5px;
-  letter-spacing: 0.05em;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #a2967f;
   white-space: nowrap;
@@ -257,7 +235,6 @@ body {
   border-radius: 3px;
 }
 
-/* ---- Settings (disclosed) ---- */
 .settings[hidden] {
   display: none;
 }
@@ -341,7 +318,6 @@ body {
   outline-offset: 2px;
 }
 
-/* ---- Troubleshooting: quiet until something is actually wrong ---- */
 .test-link {
   appearance: none;
   border: none;
@@ -387,15 +363,17 @@ body {
 .header { animation: fadeUp 300ms ease-out both; }
 .today-date,
 .today-theme { animation: fadeUp 320ms ease-out both; animation-delay: 60ms; }
-.glass { animation: fadeUp 340ms ease-out both; animation-delay: 140ms; }
-.foot { animation: fadeUp 300ms ease-out both; animation-delay: 220ms; }
+.week,
+.week-labels { animation: fadeUp 340ms ease-out both; animation-delay: 130ms; }
+.cta-wrap { animation: fadeUp 320ms ease-out both; animation-delay: 200ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .header,
   .today-date,
   .today-theme,
-  .glass,
-  .foot,
+  .week,
+  .week-labels,
+  .cta-wrap,
   .settings {
     animation: none;
   }

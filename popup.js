@@ -1,12 +1,13 @@
-/* Popup — a small ledger of today.
+/* Popup — today's date, the week's rhythm, and one door into the journal.
 
-   Before writing it shows the date, the day's theme and one of today's real
-   questions. After writing it hands the reader their own first line back.
-   The hourly sentence deliberately lives only in the notification; repeating
-   it here added a second, rerollable copy of a channel that already exists. */
+   The hourly sentence deliberately lives only in the notification. The
+   pre-writing question taste and the post-writing read-back were removed in
+   this redesign: the popup's whole job is to point at the page and show the
+   week. */
 
 document.addEventListener('DOMContentLoaded', async () => {
   const WEEK_DAYS = 7;
+  const WEEK_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   const todayKey = getLocalDateKey();
 
@@ -21,39 +22,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('today-date').textContent = prettyDate(todayKey);
   document.getElementById('today-theme').textContent = themeForDateKey(todayKey);
 
-  // ---- Written or not ----
-  // One control, two states. The eyebrow carries the status so the sentence
-  // underneath stays a plain instruction.
+  // ---- The one call to action ----
   const entry = await getJournalEntry(todayKey);
   const complete = isEntryComplete(entry);
 
-  const journalLink = document.getElementById('journal-link');
-  const eyebrow = document.getElementById('journal-eyebrow');
-  const journalText = journalLink.querySelector('.journal-link-text');
+  const ctaTitle = document.getElementById('cta-title');
+  const ctaSub = document.getElementById('cta-sub');
 
   if (complete) {
-    eyebrow.textContent = 'Written today ✓';
-    journalText.textContent = "Reread your gratitude journal";
+    ctaTitle.textContent = "Reread today's daily gratitude journal";
+    ctaSub.textContent = 'Page written ✓';
   } else {
-    eyebrow.textContent = "Today's page";
-    journalText.textContent = "Write your gratitude journal";
+    ctaTitle.textContent = "Write today's daily gratitude journal";
+    ctaSub.textContent = 'Three questions · five minutes';
   }
 
-  journalLink.addEventListener('click', () => {
+  document.getElementById('journal-link').addEventListener('click', () => {
     chrome.tabs.create({ url: chrome.runtime.getURL('journal.html') });
   });
 
   // ---- This week ----
-  // The calendar week we are actually in, Monday to Sunday — so the dots line
-  // up with the themed days, which start on Monday. Filled in, or not.
+  // Monday to Sunday, so the dots line up with the themed days. Written days
+  // fill in; today is an open ring until it is written.
   (async function renderWeek() {
     const map = await getJournalMap();
     const week = document.getElementById('week');
+    const labels = document.getElementById('week-labels');
 
     const now = new Date();
     const monday = new Date(now);
-    // getDay() is 0 for Sunday, so Sunday counts as the 7th day of the week
-    // rather than the 1st.
     monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
 
     let written = 0;
@@ -61,20 +58,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
       const key = getLocalDateKey(d);
-      const dot = document.createElement('i');
       const done = isEntryComplete(map[key]);
+      const isToday = key === todayKey;
+
+      const dot = document.createElement('i');
       if (done) {
         dot.classList.add('is-written');
         written++;
       }
+      if (isToday) dot.classList.add('is-today');
       dot.title = `${d.toLocaleDateString(undefined, { weekday: 'long' })} — ${done ? 'written' : 'not written'}`;
       week.appendChild(dot);
+
+      const label = document.createElement('span');
+      label.textContent = WEEK_LETTERS[i];
+      if (isToday) label.classList.add('is-today');
+      labels.appendChild(label);
     }
 
-    const label = document.createElement('span');
-    label.className = 'week-label';
-    label.textContent = "this week's progress";
-    week.appendChild(label);
     week.setAttribute('aria-label', `${written} of ${WEEK_DAYS} days written this week`);
   })();
 
@@ -132,7 +133,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const level = await getNotificationPermissionLevel();
     if (level === 'denied') {
-      // Real, confirmed signal — stays until they fix it.
       awaitingFix = true;
       setState('blocked by Chrome — fix', 'warn');
       return;

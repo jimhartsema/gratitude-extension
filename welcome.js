@@ -19,17 +19,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   let pinNeeded = true;
 
   // Which dot lights up for each step; `fix` is a detour off the `test` step.
-  const DOT_FOR_STEP = { intro: 'intro', test: 'test', fix: 'test', pin: 'pin', done: 'done' };
-  const DOT_ORDER = ['intro', 'test', 'pin', 'done'];
+  const DOT_FOR_STEP = {
+    intro: 'intro', test: 'test', fix: 'test', pin: 'pin', journal: 'journal', done: 'done'
+  };
+  const DOT_ORDER = ['intro', 'test', 'pin', 'journal', 'done'];
 
   function sceneFor(name) {
     if (name === 'fix') return platform === 'win' ? 'win' : 'mac';
     if (name === 'pin') return 'pin';
+    if (name === 'journal') return 'journal';
     return platform === 'win' ? 'banner-win' : 'banner';
   }
 
   function go(name) {
-    if (name === 'pin' && !pinNeeded) name = 'done';
+    // Already pinned? Skip the pinning step, but not the one that shows where
+    // the journal actually lives — that is the point of the whole setup.
+    if (name === 'pin' && !pinNeeded) name = 'journal';
     if (step === name) return;
     step = name;
 
@@ -78,8 +83,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   dots.forEach((dot) => {
     dot.addEventListener('click', () => go(dot.dataset.dot));
   });
-
-  document.querySelector('[data-skip]').addEventListener('click', () => go('done'));
 
   document.querySelector('[data-open-journal]').addEventListener('click', () => {
     chrome.tabs.create({ url: chrome.runtime.getURL('journal.html') });

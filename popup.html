@@ -9,11 +9,11 @@
 </head>
 <body>
   <div class="card">
-    <div class="glasswrap">
-      <div class="pad">
-        <div class="header">
+    <div class="pad">
+      <div class="header">
+        <span class="brand">
           <span class="mark" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a5502a" stroke-width="1.7" stroke-linecap="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#bf5a2e" stroke-width="1.7" stroke-linecap="round">
               <circle cx="12" cy="13.5" r="4"></circle>
               <line x1="12" y1="3.2" x2="12" y2="6"></line>
               <line x1="3.8" y1="13.5" x2="1.5" y2="13.5"></line>
@@ -23,31 +23,26 @@
             </svg>
           </span>
           <span class="wordmark">Daily Gratitude</span>
-        </div>
-
-        <p class="today-date" id="today-date"></p>
-        <p class="today-theme" id="today-theme"></p>
+        </span>
+        <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="settings">
+          <span class="settings-chevron" aria-hidden="true">⌄</span> settings
+        </button>
       </div>
 
-      <button class="glass" id="journal-link" type="button">
-        <span class="knob" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5V6a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v13"></path>
-            <path d="M6 17h12"></path>
-            <path d="M9 8.5h6"></path>
-          </svg>
-        </span>
-        <span class="glass-text">
-          <span class="glass-eyebrow" id="journal-eyebrow">Today's page</span>
-          <span class="journal-link-text">Write your gratitude journal</span>
-        </span>
-      </button>
+      <p class="today-date" id="today-date"></p>
+      <p class="today-theme" id="today-theme"></p>
+
+      <div class="week" id="week" role="img" aria-label="Days written this week"></div>
+      <div class="week-labels" id="week-labels" aria-hidden="true"></div>
     </div>
 
-    <div class="foot">
-      <div class="week" id="week" role="img" aria-label="Days written this week"></div>
-      <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="settings">
-        <span class="settings-chevron" aria-hidden="true">⌄</span> settings
+    <div class="cta-wrap">
+      <button class="journal-cta" id="journal-link" type="button">
+        <span class="cta-text">
+          <span class="cta-title" id="cta-title">Write today's daily gratitude journal</span>
+          <span class="cta-sub" id="cta-sub">Three questions · five minutes</span>
+        </span>
+        <span class="cta-arrow" aria-hidden="true">→</span>
       </button>
     </div>
 
