@@ -18,6 +18,17 @@ That's it. No account. No ads. No data collected. Completely free.
 
 ---
 
+## Morning journal
+
+A one-page daily ritual, in the spirit of the Five Minute Journal: three grateful for…, three what-would-make-today-great, one daily affirmation. Open it from the popup ("Today's page") or from the one gentle notification you get on your first browser-open of the day.
+
+- Takes under five minutes. Only the first "grateful for" line is required — a partial page still counts as done.
+- Autosaves as you type, so closing the tab never loses your writing.
+- One page per day, one notification per day — a small badge on the toolbar icon is the only other reminder, and it disappears the moment you're done.
+- Reopen a finished page any time to read it back, with an "Edit" link if you want to change it.
+
+---
+
 ## Install
 
 ### From the Chrome Web Store *(coming soon)*
@@ -65,14 +76,15 @@ Daily Gratitude was built with one rule: your data is yours.
 **What we collect:** Nothing. Daily Gratitude does not collect, store, or 
 transmit any personal information, browsing history, or usage data.
 
-**What stays on your device:** The only thing stored is your single 
-preference — whether hourly reminders are turned on or off. This is saved 
-locally in your browser and never leaves your device.
+**What stays on your device:** Your on/off preference for hourly reminders, 
+and anything you write in the morning journal. Journal entries are stored 
+locally in your browser only — never transmitted anywhere, never synced to 
+an account, never seen by us. Uninstalling the extension deletes them.
 
 **Permissions explained:**
-- `alarms` — schedules the hourly reminder
-- `notifications` — displays the reminder on your screen
-- `storage` — remembers your on/off preference
+- `alarms` — schedules the hourly reminder and the daily journal check
+- `notifications` — displays the reminder and journal nudge on your screen
+- `storage` — remembers your on/off preference and your journal entries, on-device only
 
 **Third parties:** None. No analytics, no tracking tools, no external 
 services of any kind are used.

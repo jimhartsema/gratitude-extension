@@ -1,0 +1,658 @@
+* {
+  box-sizing: border-box;
+}
+
+/* The hidden attribute must win over component display rules below. */
+[hidden] {
+  display: none !important;
+}
+
+html {
+  background: #f0ebe0;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f0ebe0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  /* Symmetric, so centring is true rather than optically off. */
+  padding: 48px 20px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden;
+  perspective: 2200px;
+}
+
+.bg-mark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+  /* Every page is the same leaf of paper, written on or not. The floor holds
+     a blank page open to full size; the flex column lets the slack fall
+     between the writing and the footer instead of below the navigation.
+     fit-content is required: body is a flex row, and without it the page
+     stretches to the window instead of honouring the floor. */
+  height: fit-content;
+  min-height: 880px;
+  /* Auto margins centre the book on both axes. Deliberately not
+     align-items:center — when the page is taller than the viewport that
+     clips the top out of reach, whereas auto margins collapse to 0. */
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  background: #f7f2e8;
+  border-radius: 18px;
+  padding: 48px 52px 44px;
+  /* Same fore-edge stack as .book, so the cover and the page underneath are
+     exactly the same object — no step at the right edge when the book opens. */
+  box-shadow:
+    1.5px 0.5px 0 #efe6d4,
+    3px 1px 0 #e9e0cd,
+    4.5px 1.5px 0 #e3d9c5,
+    6px 2px 0 #ddd3bd,
+    7.5px 2.5px 0 #d8ceb6,
+    9px 3px 0 #d3c9af,
+    10.5px 3.5px 0 #cec3a8,
+    14px 22px 34px rgba(44, 38, 32, 0.16),
+    30px 44px 70px rgba(44, 38, 32, 0.14);
+  transform-style: preserve-3d;
+}
+
+/* Spine shading down the left edge of the open page — the gutter of a real
+   book block, and it lines up with the cover's hinge above it. */
+.page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 26px;
+  border-radius: 18px 0 0 18px;
+  background: linear-gradient(90deg, rgba(44, 38, 32, 0.07), rgba(44, 38, 32, 0));
+  pointer-events: none;
+}
+
+/* ---- Header (matches popup/welcome) ---- */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.mark {
+  display: inline-flex;
+  flex: none;
+}
+
+.wordmark {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #7a6f5e;
+}
+
+.rule {
+  height: 1px;
+  background: #e3d9c6;
+  margin-bottom: 34px;
+}
+
+/* ---- Date heading ---- */
+.date-heading {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 1.2;
+  color: #2c2620;
+  margin: 0 0 40px;
+}
+
+/* ---- Prompts ---- */
+.prompt {
+  margin-bottom: 36px;
+}
+
+.prompt:last-of-type {
+  margin-bottom: 44px;
+}
+
+.prompt-label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7a6f5e;
+  margin: 0 0 16px;
+}
+
+/* Theme of the day, sat alongside "I am grateful for…" */
+.theme-chip {
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid #e0b89f;
+  color: #bf5a2e;
+  letter-spacing: 0.06em;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* Wraps a themed question with its input so the flex gap above stays
+   between prompts, not between a question and the line it belongs to. */
+.line-group {
+  display: block;
+}
+
+/* The number leads the question, and the answer line runs the full width
+   beneath it — hanging indent, the way a numbered list reads on paper. */
+.line-question {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: baseline;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 20px;
+  line-height: 1.35;
+  color: #2c2620;
+  margin: 0 0 8px;
+  cursor: text;
+  text-wrap: pretty;
+}
+
+.line-number {
+  font-size: 16px;
+  color: #c9a68c;
+}
+
+.line-row {
+  display: block;
+  padding-left: 26px;
+}
+
+/* Ruled paper — two faint lines under every question, on every page.
+
+   The writing box and the read-back share this block verbatim so a page is
+   the same object whether you are filling it in, rereading it, or looking at
+   a day you skipped. --line must equal line-height exactly, or the text
+   drifts off the rules. */
+.line-input,
+.line-readback {
+  --line: 34px;
+  --rule: rgba(44, 38, 32, 0.085);
+  display: block;
+  width: 100%;
+  margin: 0;
+  min-height: calc(var(--line) * 2);
+  font-family: "Newsreader", Georgia, serif;
+  /* The questions are printed on the page; your answers are written onto it.
+     Italic and a lighter graphite make the two read as different hands. */
+  font-style: italic;
+  font-size: 20px;
+  line-height: var(--line);
+  color: rgba(44, 38, 32, 0.72);
+  padding: 0 2px;
+  background-color: transparent;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--line) - 1px),
+    var(--rule) calc(var(--line) - 1px),
+    var(--rule) var(--line)
+  );
+  background-attachment: local;
+  transition: background-image 0.15s ease;
+}
+
+.line-input {
+  resize: none;
+  overflow: hidden;
+  appearance: none;
+  border: none;
+  outline: none;
+}
+
+/* Only while you are actually writing on a line does it warm up. */
+.line-input:focus {
+  --rule: rgba(191, 90, 46, 0.34);
+}
+
+.line-readback {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.line-input::placeholder {
+  color: #b7ac97;
+  font-style: italic;
+}
+
+.line-input[readonly] {
+  cursor: default;
+}
+
+.hint {
+  font-size: 14px;
+  color: #7a6f5e;
+  margin: 12px 0 0;
+}
+
+/* ---- Footer ---- */
+.footer {
+  margin-top: auto;
+  padding-top: 28px;
+  border-top: 1px solid #e3d9c6;
+  display: flex;
+  align-items: center;
+}
+
+.primary-btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  background: #bf5a2e;
+  color: #f7f2e8;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  padding: 13px 22px;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.primary-btn:hover {
+  background: #a94e26;
+}
+
+.primary-btn:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 3px;
+}
+
+.done-state {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.done-label {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 18px;
+  color: #2c2620;
+}
+
+.text-link {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  color: #bf5a2e;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.readonly-note {
+  font-family: "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #9a8f7d;
+}
+
+/* ---- Page-turn navigation ---- */
+.page.flipping {
+  transition: transform 0.24s ease, opacity 0.24s ease;
+}
+
+/* Marginalia, not UI chrome — the same italic serif as "a page from the
+   past", so turning pages reads as part of the book rather than a toolbar. */
+.page-nav {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.nav-btn {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 3px 1px;
+  cursor: pointer;
+  font-family: "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #9a8f7d;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.nav-btn:hover:not(:disabled) {
+  color: #a94e26;
+  border-bottom-color: #e0b89f;
+}
+
+.nav-btn:disabled {
+  color: #bdb29c;
+  cursor: default;
+  opacity: 0.55;
+}
+
+.nav-today {
+  font-size: 15px;
+  color: #bf5a2e;
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ---- Book cover intro ---- */
+.book-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  cursor: pointer;
+}
+
+/* Sized/positioned by JS to sit exactly over the real page card. The values
+   below are a close pre-JS fallback so nothing flashes collapsed. */
+.book {
+  position: fixed;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(640px, calc(100vw - 40px));
+  height: min(78vh, 760px);
+  border-radius: 6px 18px 18px 6px;
+  transform-style: preserve-3d;
+  perspective: 2400px;
+  /* Stacked page fore-edge on the right + a layered ambient shadow so the
+     whole book reads as a solid object lifted off the screen. */
+  box-shadow:
+    1.5px 0.5px 0 #efe6d4,
+    3px 1px 0 #e9e0cd,
+    4.5px 1.5px 0 #e3d9c5,
+    6px 2px 0 #ddd3bd,
+    7.5px 2.5px 0 #d8ceb6,
+    9px 3px 0 #d3c9af,
+    10.5px 3.5px 0 #cec3a8,
+    14px 22px 34px rgba(44, 38, 32, 0.22),
+    30px 44px 70px rgba(44, 38, 32, 0.26),
+    52px 72px 104px rgba(44, 38, 32, 0.16);
+}
+
+/* ---- Riffling page stack (revealed once the cover opens) ---- */
+.page-stack {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.sheet {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(105deg, #efe7d6 0%, #f7f2e8 12%, #f7f2e8 100%);
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.05);
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.sheet-content {
+  padding: 56px 60px;
+  color: #2c2620;
+}
+
+.sheet-date {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #a99d88;
+  margin-bottom: 22px;
+}
+
+.sheet-line {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 17px;
+  line-height: 1.5;
+  color: #3a332a;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #ece3d1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Gutter shadow near the spine — sells the curl as the page lifts */
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(44, 38, 32, 0.16) 0%, rgba(44, 38, 32, 0) 22%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.book-stage.riffling .sheet {
+  animation: pageFlip 0.92s cubic-bezier(0.42, 0, 0.35, 1) forwards;
+}
+
+.book-stage.riffling .sheet::before {
+  animation: gutter 0.92s ease forwards;
+}
+
+/* Stagger + depth: topmost sheet turns first, last one settles slowest */
+.book-stage.riffling .sheet:nth-child(1) { animation-delay: 0.00s; z-index: 6; }
+.book-stage.riffling .sheet:nth-child(2) { animation-delay: 0.18s; z-index: 5; }
+.book-stage.riffling .sheet:nth-child(3) { animation-delay: 0.36s; z-index: 4; }
+.book-stage.riffling .sheet:nth-child(4) { animation-delay: 0.54s; z-index: 3; }
+.book-stage.riffling .sheet:nth-child(5) { animation-delay: 0.72s; z-index: 2; }
+.book-stage.riffling .sheet:nth-child(6) {
+  animation-delay: 0.90s;
+  animation-duration: 1.15s;
+  z-index: 1;
+}
+.book-stage.riffling .sheet:nth-child(1)::before { animation-delay: 0.00s; }
+.book-stage.riffling .sheet:nth-child(2)::before { animation-delay: 0.18s; }
+.book-stage.riffling .sheet:nth-child(3)::before { animation-delay: 0.36s; }
+.book-stage.riffling .sheet:nth-child(4)::before { animation-delay: 0.54s; }
+.book-stage.riffling .sheet:nth-child(5)::before { animation-delay: 0.72s; }
+.book-stage.riffling .sheet:nth-child(6)::before { animation-delay: 0.90s; }
+
+@keyframes pageFlip {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(-172deg); }
+}
+
+@keyframes gutter {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---- Cover (sits on top of the stack) ---- */
+.cover-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  border-radius: 6px 18px 18px 6px;
+  /* Scrim over the artwork keeps the title legible on the light sky. */
+  background:
+    linear-gradient(180deg, rgba(44, 38, 32, 0.32) 0%, rgba(44, 38, 32, 0.08) 34%, rgba(44, 38, 32, 0.36) 100%),
+    url("images/cover.jpg") center 28% / cover no-repeat;
+  /* Raised hardcover: top-edge highlight, soft inner vignette, and a darker
+     lip along the right fore-edge where the cover wraps the pages. */
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.14),
+    inset -6px 0 14px rgba(0, 0, 0, 0.14),
+    inset 0 -40px 60px rgba(30, 24, 18, 0.22);
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.9s cubic-bezier(0.66, 0, 0.2, 1),
+    box-shadow 0.9s ease;
+}
+
+/* Spine: a darker band at the hinge with a crease line where the board
+   folds, plus a faint cloth grain over the whole cover. */
+.cover-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg,
+      rgba(0, 0, 0, 0.34) 0px,
+      rgba(0, 0, 0, 0.20) 14px,
+      rgba(0, 0, 0, 0.30) 21px,
+      rgba(0, 0, 0, 0.05) 30px,
+      rgba(0, 0, 0, 0) 52px),
+    repeating-linear-gradient(96deg,
+      rgba(255, 255, 255, 0.030) 0px,
+      rgba(255, 255, 255, 0.030) 1px,
+      rgba(0, 0, 0, 0.024) 1px,
+      rgba(0, 0, 0, 0.024) 3px);
+}
+
+/* Cover board thickness along the fore-edge — the lip that overhangs the
+   pages on a hardback. */
+.cover-panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 5px;
+  border-radius: 0 18px 18px 0;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(30, 24, 18, 0.30) 55%,
+    rgba(255, 255, 255, 0.16) 100%);
+}
+
+.cover-inner {
+  text-align: center;
+  color: #f7f2e8;
+  padding: 0 30px;
+  text-shadow: 0 1px 12px rgba(30, 24, 18, 0.55);
+}
+
+.cover-mark {
+  display: inline-flex;
+  margin-bottom: 22px;
+  filter: drop-shadow(0 1px 6px rgba(30, 24, 18, 0.5));
+}
+
+.cover-title {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: 0.01em;
+  color: #fbf4ea;
+}
+
+.cover-subtitle {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(251, 244, 234, 0.85);
+  margin-top: 14px;
+}
+
+.cover-hint {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(251, 244, 234, 0.85);
+  margin-top: 44px;
+  animation: hintPulse 2.4s ease-in-out infinite;
+}
+
+/* Once the reader clicks, the hint fades out rather than pulsing on. */
+.book-stage.opening .cover-hint {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* The board is stiff: it lifts away quickly, then eases as its own weight
+   carries it over — rather than a single linear swing. */
+.book-stage.opening .cover-panel {
+  transform: rotateY(-162deg) translateZ(6px);
+  box-shadow: 0 20px 50px rgba(44, 38, 32, 0.16);
+  transition: transform 1.05s cubic-bezier(0.55, 0.02, 0.24, 1),
+    box-shadow 0.9s ease;
+}
+
+.book-stage.removed {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-stage {
+    display: none;
+  }
+}
+
+/* ---- Small screens ---- */
+@media (max-width: 560px) {
+  .page {
+    padding: 36px 26px 32px;
+  }
+
+  .date-heading {
+    font-size: 26px;
+    margin-bottom: 32px;
+  }
+
+  .prompt {
+    margin-bottom: 28px;
+  }
+}

@@ -4,40 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daily Gratitude</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="fonts.css" />
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
   <div class="card">
-    <div class="header">
-      <span class="mark" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#bf5a2e" stroke-width="1.6" stroke-linecap="round">
-          <circle cx="12" cy="13.5" r="4"></circle>
-          <line x1="12" y1="3.2" x2="12" y2="6"></line>
-          <line x1="3.8" y1="13.5" x2="1.5" y2="13.5"></line>
-          <line x1="22.5" y1="13.5" x2="20.2" y2="13.5"></line>
-          <line x1="5.6" y1="7.1" x2="4" y2="5.5"></line>
-          <line x1="18.4" y1="7.1" x2="20" y2="5.5"></line>
-        </svg>
-      </span>
-      <span class="wordmark">Daily Gratitude</span>
+    <div class="pad">
+      <div class="header">
+        <span class="mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#bf5a2e" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="12" cy="13.5" r="4"></circle>
+            <line x1="12" y1="3.2" x2="12" y2="6"></line>
+            <line x1="3.8" y1="13.5" x2="1.5" y2="13.5"></line>
+            <line x1="22.5" y1="13.5" x2="20.2" y2="13.5"></line>
+            <line x1="5.6" y1="7.1" x2="4" y2="5.5"></line>
+            <line x1="18.4" y1="7.1" x2="20" y2="5.5"></line>
+          </svg>
+        </span>
+        <span class="wordmark">Daily Gratitude</span>
+      </div>
+
+      <p class="today-date" id="today-date"></p>
+      <p class="today-theme" id="today-theme"></p>
+
+      <!-- Before writing: a taste of one of today's real questions. -->
+      <p class="taste" id="taste" hidden></p>
+
+      <!-- After writing: the reader's own words, handed back to them. -->
+      <blockquote class="own-line" id="own-line" hidden></blockquote>
+      <p class="own-attrib" id="own-attrib" hidden>— what you wrote this morning</p>
+
+      <button class="journal-link" id="journal-link" type="button">
+        <span class="journal-link-text">Write today's page</span>
+        <span class="journal-link-arrow" aria-hidden="true">→</span>
+      </button>
     </div>
 
     <div class="rule"></div>
 
-    <p class="sentence" id="sentence">You are doing better than you think.</p>
-
-    <div class="footer">
-      <button class="another" id="another" type="button">
-        <svg class="another-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="21 5 21 10 16 10"></polyline>
-          <path d="M19.4 14a8 8 0 1 1-1.9-8.3L21 10"></path>
-        </svg>
-        <span class="another-text">another</span>
+    <div class="foot">
+      <div class="week" id="week" role="img" aria-label="Days written this week"></div>
+      <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="settings">
+        <span class="settings-chevron" aria-hidden="true">⌄</span> settings
       </button>
+    </div>
 
+    <div class="settings" id="settings" hidden>
       <div class="toggle-row">
         <span class="status" id="status-label">Notifications on</span>
         <label class="switch">
@@ -45,13 +57,13 @@
           <span class="slider"></span>
         </label>
       </div>
+      <button class="test-link" id="test-notif" type="button">not seeing them?</button>
     </div>
-
-    <button class="test-link" id="test-notif" type="button">test notification</button>
   </div>
 
-  <script src="sentences.js"></script>
   <script src="notify.js"></script>
+  <script src="journal-data.js"></script>
+  <script src="questions.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

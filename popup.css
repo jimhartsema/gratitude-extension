@@ -19,15 +19,24 @@ body {
   width: 320px;
   background: #f7f2e8;
   border-radius: 18px;
-  padding: 26px 26px 22px;
+}
+
+/* The rule runs full-bleed, so padding lives on an inner wrapper. */
+.pad {
+  padding: 22px 24px 20px;
+}
+
+.rule {
+  height: 1px;
+  background: #e3d9c6;
 }
 
 /* ---- Header ---- */
 .header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 9px;
+  margin-bottom: 16px;
 }
 
 .mark {
@@ -36,75 +45,190 @@ body {
 }
 
 .wordmark {
-  font-size: 10.5px;
+  font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #7a6f5e;
 }
 
-.rule {
-  height: 1px;
-  background: #e3d9c6;
-  margin-bottom: 20px;
+/* ---- Today ---- */
+.today-date {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 21px;
+  line-height: 1.2;
+  color: #2c2620;
+  margin: 0 0 3px;
 }
 
-/* ---- Hero sentence ---- */
-.sentence {
+.today-theme {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bf5a2e;
+  margin: 0;
+}
+
+/* Before writing — one of today's real questions, as a taste of the page. */
+.taste {
   font-family: "Newsreader", Georgia, serif;
-  font-weight: 400;
-  font-size: 27px;
-  line-height: 1.28;
-  color: #2c2620;
-  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #4a4136;
+  margin: 18px 0 0;
   text-wrap: pretty;
 }
 
-/* ---- Footer ---- */
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+/* After writing — their own first line, quoted back. */
+.own-line {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #2c2620;
+  margin: 18px 0 7px;
+  padding-left: 13px;
+  border-left: 2px solid #e0b89f;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
 }
 
-.another {
+.own-attrib {
+  font-family: "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  color: #9a8f7d;
+  margin: 0 0 0 13px;
+}
+
+/* ---- Journal doorway ---- */
+.journal-link {
   appearance: none;
   border: none;
   background: none;
-  padding: 0;
-  margin: 0;
+  padding: 0 0 1px;
+  margin: 17px 0 0;
   cursor: pointer;
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 7px;
-  color: #bf5a2e;
-}
-
-.another-icon {
-  display: block;
-}
-
-.another-text {
   font-family: "Newsreader", Georgia, serif;
   font-style: italic;
-  font-size: 15px;
-  line-height: 1;
+  font-size: 16px;
+  color: #bf5a2e;
   border-bottom: 1px solid #e0b89f;
-  padding-bottom: 1px;
-  transition: border-color 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.another:hover .another-text {
+.journal-link:hover {
+  color: #a94e26;
   border-bottom-color: #bf5a2e;
 }
 
-.another:focus-visible {
+.journal-link-arrow {
+  font-style: normal;
+  transition: transform 0.18s ease;
+}
+
+.journal-link:hover .journal-link-arrow {
+  transform: translateX(3px);
+}
+
+.journal-link:focus-visible {
   outline: 2px solid #e0b89f;
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* ---- Toggle ---- */
+/* ---- Foot: week rhythm + settings disclosure ---- */
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 24px 15px;
+}
+
+.week {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.week i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e0d6c2;
+  display: block;
+}
+
+.week i.is-written {
+  background: #bf5a2e;
+}
+
+.week-label {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2967f;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.settings-toggle {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 2px 0;
+  margin: 0;
+  cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a2967f;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.settings-toggle:hover {
+  color: #bf5a2e;
+}
+
+.settings-chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.settings-toggle[aria-expanded="true"] .settings-chevron {
+  transform: rotate(180deg);
+}
+
+.settings-toggle:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ---- Settings (disclosed) ---- */
+.settings[hidden] {
+  display: none;
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 24px 17px;
+  border-top: 1px solid #e3d9c6;
+  animation: settingsIn 220ms ease-out both;
+}
+
+@keyframes settingsIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
 .toggle-row {
   display: flex;
   align-items: center;
@@ -122,8 +246,8 @@ body {
 .switch {
   position: relative;
   display: inline-block;
-  width: 36px;
-  height: 20px;
+  width: 34px;
+  height: 19px;
   flex: none;
 }
 
@@ -148,8 +272,8 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -161,7 +285,7 @@ body {
 }
 
 .switch input:checked + .slider::before {
-  transform: translateX(16px);
+  transform: translateX(15px);
 }
 
 .switch input:focus-visible + .slider {
@@ -169,76 +293,68 @@ body {
   outline-offset: 2px;
 }
 
-/* ---- Test notification ---- */
+/* ---- Troubleshooting: quiet until something is actually wrong ---- */
 .test-link {
   appearance: none;
   border: none;
   background: none;
-  padding: 0;
-  margin: 16px 0 0;
-  display: inline-block;
+  padding: 2px 0;
+  margin: 0;
   cursor: pointer;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #f7f2e8;
-  background: #bf5a2e;
-  border-radius: 999px;
-  padding: 8px 16px;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  font-size: 10.5px;
+  color: #9a8f7d;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: #ded3bf;
+  transition: color 0.15s ease;
 }
 
 .test-link:hover {
-  background: #a94e26;
+  color: #bf5a2e;
 }
 
 .test-link:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: default;
 }
 
 .test-link.test-link--warn {
-  background: #8a3a1a;
+  color: #a3401c;
+  text-decoration-color: #e0b89f;
 }
 
-/* ---- Entrance animation ---- */
+.test-link:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ---- Entrance ---- */
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.header {
-  animation: fadeUp 300ms ease-out both;
-  animation-delay: 0ms;
-}
-
-.rule {
-  animation: fadeUp 300ms ease-out both;
-  animation-delay: 70ms;
-}
-
-.sentence {
-  animation: fadeUp 360ms ease-out both;
-  animation-delay: 140ms;
-}
-
-.footer {
-  animation: fadeUp 300ms ease-out both;
-  animation-delay: 220ms;
-}
+.header { animation: fadeUp 300ms ease-out both; }
+.today-date,
+.today-theme { animation: fadeUp 320ms ease-out both; animation-delay: 60ms; }
+.taste,
+.own-line,
+.own-attrib { animation: fadeUp 340ms ease-out both; animation-delay: 130ms; }
+.journal-link { animation: fadeUp 320ms ease-out both; animation-delay: 200ms; }
+.foot { animation: fadeUp 300ms ease-out both; animation-delay: 260ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .header,
-  .rule,
-  .sentence,
-  .footer {
+  .today-date,
+  .today-theme,
+  .taste,
+  .own-line,
+  .own-attrib,
+  .journal-link,
+  .foot,
+  .settings {
     animation: none;
   }
 }
