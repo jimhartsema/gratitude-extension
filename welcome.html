@@ -40,19 +40,18 @@
       <div class="panes">
         <!-- ---- 1. Intro ---- -->
         <div class="pane" data-pane="intro">
-          <p class="eyebrow">Setup · 1 of 3</p>
+          <p class="eyebrow">Setup · 1 of 4</p>
           <h1 class="heading">One kind sentence, every hour.</h1>
           <p class="subtext">
             Daily Gratitude sends a single gentle reminder each hour — no feed, no streaks,
             nothing to keep up with. It takes about a minute to make sure it can reach you.
           </p>
           <button class="primary-btn" data-go="test" type="button">Set up notifications</button>
-          <button class="text-link" data-skip type="button">I'll do this later</button>
         </div>
 
         <!-- ---- 2. Test ---- -->
         <div class="pane" data-pane="test">
-          <p class="eyebrow">Setup · 2 of 3</p>
+          <p class="eyebrow">Setup · 2 of 4</p>
           <h1 class="heading">Let's make sure you can see it.</h1>
           <p class="subtext">
             We'll send one test reminder right now. Watch the corner of your screen —
@@ -72,7 +71,7 @@
 
         <!-- ---- 3. Fix ---- -->
         <div class="pane" data-pane="fix">
-          <p class="eyebrow">Setup · 2 of 3</p>
+          <p class="eyebrow">Setup · 2 of 4</p>
           <h1 class="heading">Your computer is holding them back.</h1>
           <p class="subtext">
             Almost always this is the operating system muting Chrome, not the extension.
@@ -114,17 +113,34 @@
 
         <!-- ---- 4. Pin ---- -->
         <div class="pane" data-pane="pin">
-          <p class="eyebrow">Setup · 3 of 3</p>
+          <p class="eyebrow">Setup · 3 of 4</p>
           <h1 class="heading">Keep it one click away.</h1>
           <p class="subtext">
             Pin Daily Gratitude to your toolbar and you can pull up a sentence — or today's
             journal page — whenever you want one, without waiting for the hour.
           </p>
-          <button class="primary-btn" data-go="done" type="button">Pinned it</button>
-          <button class="text-link" data-go="done" type="button">Skip for now</button>
+          <button class="primary-btn" data-go="journal" type="button">Pinned it</button>
         </div>
 
-        <!-- ---- 5. Done ---- -->
+        <!-- ---- 5. Where the journal lives ---- -->
+        <div class="pane" data-pane="journal">
+          <p class="eyebrow">Setup · 4 of 4</p>
+          <h1 class="heading">Your journal lives behind the icon.</h1>
+          <p class="subtext">
+            Click Daily Gratitude in the toolbar and today's page is one tap away —
+            three questions, chosen for the day, five minutes to answer.
+          </p>
+
+          <ol class="steps">
+            <li>Click the <strong>Daily Gratitude</strong> icon in your toolbar</li>
+            <li>Press <strong>Write today's daily gratitude journal</strong></li>
+            <li>Your page opens in a new tab</li>
+          </ol>
+
+          <button class="primary-btn" data-go="done" type="button">Got it</button>
+        </div>
+
+        <!-- ---- 6. Done ---- -->
         <div class="pane" data-pane="done">
           <p class="eyebrow">All set</p>
           <h1 class="heading">You're ready.</h1>
@@ -141,6 +157,7 @@
         <button class="dot" data-dot="intro" type="button" aria-label="Welcome"></button>
         <button class="dot" data-dot="test" type="button" aria-label="Notifications"></button>
         <button class="dot" data-dot="pin" type="button" aria-label="Pin to toolbar"></button>
+        <button class="dot" data-dot="journal" type="button" aria-label="Find your journal"></button>
         <button class="dot" data-dot="done" type="button" aria-label="Done"></button>
       </div>
     </section>

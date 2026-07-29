@@ -324,7 +324,7 @@
 
   /* ---- Scene: pin the extension to the Chrome toolbar --------------------- */
 
-  function browserChrome(inner, extras) {
+  function browserChrome(inner, extras, pinned) {
     return (
       '<div class="wt-screen wt-screen--browser">' +
       '<div class="wt-browser">' +
@@ -333,7 +333,8 @@
       '<div class="wt-toolbar">' +
       '<span class="wt-tbicon">' + ICON.back + '</span>' +
       '<span class="wt-omnibox">' + ICON.lock + '<span data-url>chrome://newtab</span></span>' +
-      '<span class="wt-pinned-slot" data-slot><img src="icons/icon48.png" alt=""></span>' +
+      '<span class="wt-pinned-slot' + (pinned ? ' is-shown' : '') + '" data-slot>' +
+      '<img src="icons/icon48.png" alt=""></span>' +
       '<span class="wt-tbicon" data-puzzle>' + ICON.puzzle + '</span>' +
       '<span class="wt-tbicon">' + ICON.dots + '</span>' +
       '</div>' +
@@ -438,6 +439,104 @@
     };
   }
 
+
+  /* ---- Scene: open the journal from the toolbar ---------------------------- */
+
+  function journalScene() {
+    const dots = [1, 1, 0, 0, 0, 0, 0]
+      .map((on, i) => `<i class="${on ? 'is-on' : ''}${i === 2 ? ' is-today' : ''}"></i>`).join('');
+    const letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+      .map((l, i) => `<span${i === 2 ? ' class="is-today"' : ''}>${l}</span>`).join('');
+
+    // A miniature of the real popup, hanging off the pinned toolbar icon.
+    const popup =
+      '<div class="wt-pop" data-pop>' +
+      '<div class="wt-pop-head"><span class="wt-pop-brand">' +
+      '<img src="icons/icon48.png" alt="">Daily Gratitude</span>' +
+      '<span class="wt-pop-set">⌄ settings</span></div>' +
+      '<div class="wt-pop-date">Wednesday, 29 July</div>' +
+      '<div class="wt-pop-theme">Growth</div>' +
+      '<div class="wt-pop-week">' + dots + '</div>' +
+      '<div class="wt-pop-letters">' + letters + '</div>' +
+      '<div class="wt-pop-cta" data-cta><span>Write today’s daily<br>gratitude journal' +
+      '<em>Three questions · five minutes</em></span><b>→</b></div>' +
+      '</div>';
+
+    // The journal page, revealed in the tab once the CTA is pressed. This is a
+    // 300/640 scale model of the real page — same card, same rule, same date
+    // heading, same numbered questions over two ruled lines — running off the
+    // bottom of the viewport exactly as the real 880px page does.
+    const jq = (n, q) =>
+      '<div class="wt-jgroup"><div class="wt-jq"><i>' + n + '</i><span>' + q +
+      '</span></div><div class="wt-janswer"></div></div>';
+
+    const cover =
+      '<div class="wt-jcover" data-jcover><div class="wt-jcover-inner">' +
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3ded2" ' +
+      'stroke-width="1.3" stroke-linecap="round"><circle cx="12" cy="13.5" r="4"/>' +
+      '<line x1="12" y1="3.2" x2="12" y2="6"/><line x1="3.8" y1="13.5" x2="1.5" y2="13.5"/>' +
+      '<line x1="22.5" y1="13.5" x2="20.2" y2="13.5"/><line x1="5.6" y1="7.1" x2="4" y2="5.5"/>' +
+      '<line x1="18.4" y1="7.1" x2="20" y2="5.5"/></svg>' +
+      '<div class="wt-jcover-title">Daily Gratitude</div>' +
+      '<div class="wt-jcover-sub">Morning Journal</div>' +
+      '<div class="wt-jcover-hint">Click to open</div>' +
+      '</div></div>';
+
+    const page =
+      '<div class="wt-jpage" data-jpage><div class="wt-jstack">' +
+      '<div class="wt-jcard">' +
+      '<div class="wt-jhead"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#bf5a2e" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="13.5" r="4"/><line x1="12" y1="3.2" x2="12" y2="6"/><line x1="3.8" y1="13.5" x2="1.5" y2="13.5"/><line x1="22.5" y1="13.5" x2="20.2" y2="13.5"/><line x1="5.6" y1="7.1" x2="4" y2="5.5"/><line x1="18.4" y1="7.1" x2="20" y2="5.5"/></svg> <span>Daily Gratitude</span></div>' +
+      '<div class="wt-jhr"></div>' +
+      '<div class="wt-jdate">Wednesday, July 29</div>' +
+      '<div class="wt-jlabel">I am grateful for…<b>Growth</b></div>' +
+      '<div class="wt-jlines">' +
+      jq(1, 'What advice would you give someone starting what you’ve already been through?') +
+      jq(2, 'What’s something hard you did that you’re now glad you had to do?') +
+      jq(3, 'What can you do now that you couldn’t a year ago?') +
+      '</div></div>' + cover + '</div></div>';
+
+    return {
+      total: 12800,
+      beats: 4,
+      html: browserChrome(
+        '<div class="wt-newtab" data-newtab>' +
+        '<div class="wt-newtab-logo">' + chromeLogo('') + '</div>' +
+        '<div class="wt-newtab-search">' + ICON.search + '<span>Search Google or type a URL</span></div>' +
+        '<div class="wt-newtab-tiles"><i></i><i></i><i></i><i></i><i></i></div>' +
+        '</div>' + page + popup,
+        '',
+        true // start with the extension already pinned
+      ),
+      timeline: [
+        { at: 0, caption: 'Click Daily Gratitude in your toolbar.', beat: 0, cursor: [300, 340] },
+        { at: 500, move: '[data-slot]', dur: 950 },
+        { at: 1500, add: [['[data-slot]', 'is-hot']] },
+        { at: 1950, click: true },
+        { at: 2100, add: [['[data-pop]', 'is-open']] },
+
+        { at: 3100, caption: 'Press the button — that is today’s page.', beat: 1, move: '[data-cta]', dur: 900 },
+        { at: 4100, add: [['[data-cta]', 'is-hot']] },
+        { at: 4600, click: true },
+        {
+          at: 4800,
+          remove: [['[data-pop]', 'is-open'], ['[data-cta]', 'is-hot'], ['[data-slot]', 'is-hot']],
+          add: [['[data-newtab]', 'is-gone'], ['[data-jpage]', 'is-open']],
+          text: [['[data-url]', 'Daily Gratitude — Today’s Page']]
+        },
+
+        // The page does not appear bare: the journal opens on its cover, and
+        // the reader clicks it open. Same as the real runBookIntro.
+        { at: 5300, caption: 'Your journal opens on its cover — click it.', beat: 2,
+          move: '[data-jcover]', dur: 900 },
+        { at: 6400, click: true },
+        { at: 6600, add: [['[data-jcover]', 'is-open']] },
+
+        { at: 7900, caption: 'Three questions, five minutes. That is the whole thing.', beat: 3 },
+        { at: 8500, to: [320, 340], dur: 900 }
+      ]
+    };
+  }
+
   /* ---- Scene registry ----------------------------------------------------- */
 
   const SCENES = {
@@ -446,6 +545,7 @@
     mac: macScene,
     win: winScene,
     pin: pinScene,
+    journal: journalScene,
     blocked: blockedScene
   };
 
