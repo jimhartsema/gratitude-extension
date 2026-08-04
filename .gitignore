@@ -2,3 +2,15 @@
 *.zip
 .claude/settings.local.json
 How to download/
+
+# Promo and store-listing material. None of it is loaded by the extension,
+# and the video/audio in particular is far too heavy to keep in git forever.
+# Deliberately not a blanket *.png — icons/ and images/ ship with the build.
+*.mp4
+*.mp3
+*.srt
+business-card-*.pdf
+card-front-preview.png
+card-back-preview.png
+office-still-for-flow.png
+thumbnail.png
