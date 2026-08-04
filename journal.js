@@ -15,14 +15,16 @@ function hasContent(entry) {
 }
 
 // ---- Book cover intro: hold, swing open, riffle through recent pages ----
+// Returns a handle for closing the book again later, or null when there is no
+// book to animate (reduced motion).
 function runBookIntro(dateLabel) {
   const stage = document.getElementById('book-stage');
-  if (!stage) return;
+  if (!stage) return null;
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) {
     stage.remove();
-    return;
+    return null;
   }
 
   // Sit the book exactly over the real page card so the reveal is seamless.
@@ -74,6 +76,41 @@ function runBookIntro(dateLabel) {
     if (!opened) openBook();
     else skip();
   });
+
+  return {
+    // Swing the cover back over the finished page. onClosed fires once it has
+    // settled, so the thank-you note lands on a shut book.
+    close(onClosed) {
+      timers.forEach(clearTimeout);
+      sizeBook();
+      // The cover is the only thing that should move on the way back; the
+      // riffle sheets go back to lying flat underneath it.
+      stage.classList.remove('removed', 'riffling');
+      stage.style.pointerEvents = 'none';
+      // The board has to start from where it swung open to, so it keeps
+      // .opening for a beat — dropping that class is the close. The reflow
+      // commits the open angle first, so the swing has somewhere to come from.
+      // Deliberately a timer rather than rAF: if the tab is hidden when the
+      // page is finished, rAF never fires and the book would hang half-shut.
+      stage.classList.add('opening');
+      void stage.offsetWidth;
+      timers.push(setTimeout(() => {
+        stage.classList.add('closing');
+        stage.classList.remove('opening');
+        timers.push(setTimeout(onClosed, 900));
+      }, 20));
+    },
+    // And open it again on the way out, back onto the page just written.
+    reopen() {
+      sizeBook();
+      stage.classList.remove('closing');
+      stage.classList.add('opening');
+      timers.push(setTimeout(() => {
+        stage.classList.add('removed');
+        stage.style.pointerEvents = '';
+      }, 1060));
+    }
+  };
 }
 
 // Paint the most recent real entries onto the riffle sheets so the book
@@ -117,6 +154,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const navPrev = document.getElementById('nav-prev');
   const navNext = document.getElementById('nav-next');
   const navToday = document.getElementById('nav-today');
+  const finishNote = document.getElementById('finish-note');
+  const finishBody = document.getElementById('finish-body');
+  const finishCount = document.getElementById('finish-count');
+  const finishBtn = document.getElementById('finish-btn');
 
   const allInputs = [...gratefulInputs];
 
@@ -130,7 +171,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const todayLabel = formatDateKey(todayKey);
   dateHeading.textContent = todayLabel;
-  runBookIntro(todayLabel);
+  const book = runBookIntro(todayLabel);
 
   // Today's three themed prompts, seeded by the date (see questions.js).
   const todayQuestions = questionsForDateKey(todayKey);
@@ -345,6 +386,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   document.addEventListener('keydown', (e) => {
+    // While the thank-you note is up it owns the keyboard — Escape dismisses
+    // it, and the arrows must not turn pages behind it.
+    if (!finishNote.hidden) {
+      if (e.key === 'Escape') dismissNote();
+      return;
+    }
     const el = document.activeElement;
     const typing = el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') && !el.readOnly;
     if (typing) return;
@@ -367,6 +414,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (document.visibilityState === 'hidden') flushSave();
   });
 
+  // ---- Thank-you note once the book has shut ----
+  // Four ways of saying it, so a note you meet every morning doesn't wear out.
+  const FINISH_NOTES = [
+    'That is amazing! Another day of gratitude. Have a wonderful day!',
+    'Beautiful. Another day of gratitude, noticed and written down. Have a wonderful day!',
+    'Lovely work — three more things the day would otherwise have swallowed. Enjoy every bit of it!',
+    'Wonderful. Another page in the book, another day of gratitude. Go and have a lovely one!'
+  ];
+  // "Another day of gratitude" doesn't fit a day being filled in after the fact.
+  const PAST_NOTE = 'That day is written down now — nothing lost. Have a wonderful day!';
+
+  function celebrate(isToday) {
+    const written = Object.keys(allEntries).filter((k) => isEntryComplete(allEntries[k])).length;
+    finishBody.textContent = isToday
+      ? FINISH_NOTES[written % FINISH_NOTES.length]
+      : PAST_NOTE;
+    finishCount.textContent = written === 1 ? 'Your first page is written' : `${written} pages written`;
+    finishCount.hidden = false;
+
+    function show() {
+      finishNote.hidden = false;
+      void finishNote.offsetWidth; // commit the hidden state so the fade runs
+      setTimeout(() => {
+        finishNote.classList.add('visible');
+        finishBtn.focus();
+      }, 20);
+    }
+
+    // Under reduced motion there is no book to close — the note just arrives.
+    if (book) book.close(show);
+    else show();
+  }
+
+  function dismissNote() {
+    if (finishNote.hidden) return;
+    finishNote.classList.remove('visible');
+    setTimeout(() => {
+      finishNote.hidden = true;
+      if (book) book.reopen();
+      // Back onto the page just written; by now it is finished, so the footer
+      // is showing Edit rather than Done.
+      (doneBtn.hidden ? editBtn : doneBtn).focus();
+    }, 300);
+  }
+
+  finishBtn.addEventListener('click', dismissNote);
+  // Anywhere off the card also closes it.
+  finishNote.addEventListener('click', (e) => {
+    if (e.target === finishNote) dismissNote();
+  });
+
   // ---- Mark the open page done ----
   doneBtn.addEventListener('click', () => {
     const key = currentKey;
@@ -384,6 +482,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     editingKey = null;
     saveJournalEntry(key, draft);
     renderPage(currentIndex);
+    celebrate(key === todayKey);
   });
 
   // ---- Reopen a finished page ----
