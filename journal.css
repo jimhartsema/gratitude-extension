@@ -312,6 +312,14 @@ body {
   text-underline-offset: 2px;
 }
 
+/* Focus returns here after the thank-you note is dismissed, so it needs the
+   same warm ring as everything else rather than the browser's blue default. */
+.text-link:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 .readonly-note {
   font-family: "Newsreader", Georgia, serif;
   font-style: italic;
@@ -631,6 +639,21 @@ body {
     box-shadow 0.9s ease;
 }
 
+/* Closing on a finished page: the same board swinging back the other way.
+   A shade slower than the open — a cover falls shut under its own weight. */
+.book-stage.closing .cover-panel {
+  transform: rotateY(0deg);
+  transition: transform 0.95s cubic-bezier(0.5, 0.02, 0.2, 1),
+    box-shadow 0.9s ease;
+}
+
+/* "Click to open" belongs to the intro only — it must not pulse back on
+   while the book is closing itself. */
+.book-stage.closing .cover-hint {
+  animation: none;
+  opacity: 0;
+}
+
 .book-stage.removed {
   display: none;
 }
@@ -638,6 +661,90 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .book-stage {
     display: none;
+  }
+}
+
+/* ---- Thank-you note over the closed book ---- */
+.finish-note {
+  position: fixed;
+  inset: 0;
+  /* Above the book stage, so the note lands on the shut cover. */
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(44, 38, 32, 0.44);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.finish-note.visible {
+  opacity: 1;
+}
+
+.finish-card {
+  width: min(430px, 100%);
+  background: #f7f2e8;
+  border-radius: 18px;
+  padding: 40px 38px 34px;
+  text-align: center;
+  box-shadow:
+    0 24px 50px rgba(44, 38, 32, 0.28),
+    0 44px 90px rgba(44, 38, 32, 0.22);
+  /* Rises to meet you rather than appearing flat on the cover. */
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.finish-note.visible .finish-card {
+  transform: none;
+}
+
+.finish-mark {
+  display: inline-flex;
+  margin-bottom: 18px;
+}
+
+.finish-title {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.2;
+  color: #2c2620;
+  margin: 0 0 14px;
+}
+
+.finish-body {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 19px;
+  line-height: 1.5;
+  color: rgba(44, 38, 32, 0.78);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.finish-count {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a99d88;
+  margin: 18px 0 0;
+}
+
+#finish-btn {
+  margin-top: 28px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finish-note,
+  .finish-card {
+    transition: none;
+  }
+
+  .finish-card {
+    transform: none;
   }
 }
 
