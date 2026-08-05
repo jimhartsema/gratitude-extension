@@ -72,15 +72,17 @@
         <!-- ---- 3. Fix ---- -->
         <div class="pane" data-pane="fix">
           <p class="eyebrow">Setup · 2 of 4</p>
-          <h1 class="heading">Your computer is holding them back.</h1>
+          <h1 class="heading">Something is muting your reminders.</h1>
           <p class="subtext">
-            Almost always this is the operating system muting Chrome, not the extension.
+            Almost always something outside the extension is holding them back.
             Follow along with the walkthrough — it loops.
           </p>
 
           <div class="tabs" role="tablist" aria-label="Operating system">
             <button class="tab" data-platform="mac" role="tab" type="button">macOS</button>
             <button class="tab" data-platform="win" role="tab" type="button">Windows</button>
+            <button class="tab" data-platform="cros" role="tab" type="button">ChromeOS</button>
+            <button class="tab" data-platform="linux" role="tab" type="button">Linux</button>
           </div>
 
           <ol class="steps" data-steps="mac">
@@ -93,6 +95,22 @@
             <li><strong>Settings</strong> → <strong>System</strong> → <strong>Notifications</strong></li>
             <li>Find <strong>Google Chrome</strong> in the app list</li>
             <li>Switch it <strong>on</strong></li>
+          </ol>
+
+          <!-- No OS layer to unmute here — Chrome is the system. Do Not
+               Disturb is the usual culprit, then Chrome's own setting. -->
+          <ol class="steps" data-steps="cros" hidden>
+            <li>Click the <strong>clock</strong> in the shelf to open quick settings</li>
+            <li>Turn <strong>Do Not Disturb</strong> off</li>
+            <li><strong>Settings</strong> → <strong>Notifications</strong>, then allow <strong>Daily Gratitude</strong></li>
+          </ol>
+
+          <!-- Every desktop puts this somewhere different, so name the two
+               common ones rather than pretend there is one true path. -->
+          <ol class="steps" data-steps="linux" hidden>
+            <li>Open your desktop's notification settings — <strong>GNOME:</strong> Settings → Notifications, <strong>KDE:</strong> System Settings → Notifications</li>
+            <li>Turn off <strong>Do Not Disturb</strong> and allow <strong>Google Chrome</strong></li>
+            <li>Still nothing? Chrome may be blocking it too — the walkthrough shows where</li>
           </ol>
 
           <div class="callout" data-chrome-note hidden>

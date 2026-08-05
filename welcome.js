@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const progress = document.querySelector('[data-progress]');
   const dots = Array.from(document.querySelectorAll('[data-dot]'));
 
-  let platform = detectPlatform();
+  let platform = await detectPlatform();
   let step = null;
   let pinNeeded = true;
 
@@ -24,11 +24,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
   const DOT_ORDER = ['intro', 'test', 'pin', 'journal', 'done'];
 
+  // macOS and Windows have hand-built mocks of their own settings panes.
+  // ChromeOS and Linux deliberately don't: ChromeOS has no separate OS
+  // notification layer to mock, and Linux has a different one per desktop.
+  // Both go to the Chrome settings scene instead — the same everywhere, and on
+  // ChromeOS the likeliest culprit anyway, since there is no OS layer to blame.
+  const FIX_SCENE = { mac: 'mac', win: 'win', cros: 'blocked', linux: 'blocked' };
+  // Where a notification comes from on screen. ChromeOS stacks them by the
+  // shelf and most Linux desktops use a corner, so both read closer to the
+  // Windows mock than the macOS menubar one.
+  const BANNER_SCENE = { mac: 'banner', win: 'banner-win', cros: 'banner-win', linux: 'banner-win' };
+
   function sceneFor(name) {
-    if (name === 'fix') return platform === 'win' ? 'win' : 'mac';
+    if (name === 'fix') return FIX_SCENE[platform] || 'mac';
     if (name === 'pin') return 'pin';
     if (name === 'journal') return 'journal';
-    return platform === 'win' ? 'banner-win' : 'banner';
+    return BANNER_SCENE[platform] || 'banner';
   }
 
   function go(name) {

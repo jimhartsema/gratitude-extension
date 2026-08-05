@@ -261,6 +261,8 @@ body {
 
 .tabs {
   display: flex;
+  /* Four platforms now, so they wrap in the rail rather than overflow it. */
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 18px;
 }
