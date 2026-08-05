@@ -6,6 +6,18 @@ const JOURNAL_BADGE_COLOR = '#bf5a2e';
 const MORNING_WINDOW_START_HOUR = 5;
 const TEST_NOTIFICATION_PREFIX = 'gratitude-test-';
 
+// Reminders keep waking hours. The alarm fires around the clock and only
+// checked that a window was open — but plenty of people leave Chrome running
+// overnight, so they woke to a stack of gratitude notifications sent while
+// they slept. Nothing kind arrives at 3am.
+const DAY_START_HOUR = 8;  // nothing before this
+const DAY_END_HOUR = 22;   // nothing from this hour onwards
+
+function isWakingHour(date = new Date()) {
+  const hour = date.getHours();
+  return hour >= DAY_START_HOUR && hour < DAY_END_HOUR;
+}
+
 function setupAlarms() {
   chrome.alarms.get(ALARM_NAME, (alarm) => {
     if (!alarm) {
@@ -80,6 +92,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   }
 
   if (alarm.name !== ALARM_NAME) return;
+
+  // Checked before anything else, and before the day's journal nudge can be
+  // claimed — an overnight alarm must cost nothing, not spend the one reminder
+  // this person gets while they are asleep.
+  if (!isWakingHour()) return;
 
   const { enabled = true } = await chrome.storage.sync.get('enabled');
   if (!enabled) return;
