@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const finishNote = document.getElementById('finish-note');
   const finishBody = document.getElementById('finish-body');
   const finishCount = document.getElementById('finish-count');
-  const finishBtn = document.getElementById('finish-btn');
+  const finishCard = finishNote.querySelector('.finish-card');
 
   const allInputs = [...gratefulInputs];
 
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       void finishNote.offsetWidth; // commit the hidden state so the fade runs
       setTimeout(() => {
         finishNote.classList.add('visible');
-        finishBtn.focus();
+        finishCard.focus();
       }, 20);
     }
 
@@ -459,8 +459,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, 300);
   }
 
-  finishBtn.addEventListener('click', dismissNote);
-  // Anywhere off the card also closes it.
+  // With the dismiss button gone, these two are the only ways out: click off
+  // the card, or press Escape (handled with the other keys further up).
   finishNote.addEventListener('click', (e) => {
     if (e.target === finishNote) dismissNote();
   });
