@@ -3,7 +3,6 @@ importScripts('sentences.js', 'journal-data.js');
 const ALARM_NAME = 'gratitude-reminder';
 const JOURNAL_ALARM_NAME = 'journal-badge-check';
 const JOURNAL_BADGE_COLOR = '#bf5a2e';
-const MORNING_WINDOW_START_HOUR = 5;
 const TEST_NOTIFICATION_PREFIX = 'gratitude-test-';
 
 // Reminders keep waking hours. The alarm fires around the clock and only
@@ -45,30 +44,6 @@ async function updateBadge() {
   chrome.action.setBadgeText({ text: complete ? '' : '•' });
 }
 
-// The journal reminder rides the hourly sentence rather than arriving as a
-// notification of its own: one fewer interruption a day, and the ask turns up
-// wrapped in something pleasant instead of as a bare task prompt.
-//
-// Returns the sub-line to attach, or null. Consumes the day's allowance when
-// it returns a line, so the reminder appears on exactly one sentence a day —
-// never on all sixteen, which would read as nagging rather than a nudge.
-async function claimJournalReminderLine() {
-  const todayKey = getLocalDateKey();
-
-  const entry = await getJournalEntry(todayKey);
-  if (isEntryComplete(entry)) return null;
-
-  // Never before the local morning has started, so a night owl at 00:30 is
-  // not told their page is blank.
-  if (new Date().getHours() < MORNING_WINDOW_START_HOUR) return null;
-
-  const { lastJournalNudgeDate } = await chrome.storage.local.get('lastJournalNudgeDate');
-  if (lastJournalNudgeDate === todayKey) return null;
-
-  await chrome.storage.local.set({ lastJournalNudgeDate: todayKey });
-  return 'Today’s page is still blank — three questions, five minutes.';
-}
-
 chrome.runtime.onInstalled.addListener((details) => {
   setupAlarms();
   updateBadge();
@@ -93,9 +68,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
   if (alarm.name !== ALARM_NAME) return;
 
-  // Checked before anything else, and before the day's journal nudge can be
-  // claimed — an overnight alarm must cost nothing, not spend the one reminder
-  // this person gets while they are asleep.
+  // Checked before anything else: an overnight alarm must cost nothing.
   if (!isWakingHour()) return;
 
   const { enabled = true } = await chrome.storage.sync.get('enabled');
@@ -105,22 +78,25 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (windows.length === 0) return;
 
   const sentence = SENTENCES[Math.floor(Math.random() * SENTENCES.length)];
-  const reminder = await claimJournalReminderLine();
+  const written = isEntryComplete(await getJournalEntry(getLocalDateKey()));
 
   const options = {
     type: 'basic',
     iconUrl: 'icons/icon48.png',
-    title: 'A little reminder for you',
+    // The bold first line, and the only one guaranteed to be read. It used to
+    // say "A little reminder for you", which spent that space on a greeting
+    // the Chrome icon beside it already implied. The name earns it back.
+    //
+    // The unwritten half is only ever added while it is true, so nobody is
+    // told to go and do a thing they did this morning. Says "journal" rather
+    // than "page" — the word used everywhere in the app — because a banner
+    // arrives with no surrounding context to make "page" mean anything.
+    title: written ? 'Daily Gratitude' : 'Daily Gratitude · Today’s journal is blank',
     message: sentence,
-    // The plain sentences ask nothing, so they slide away on their own. The
-    // one a day that carries the journal line stays until it is dealt with —
-    // an auto-dismissing banner drops into Notification Center after a few
-    // seconds, and a click from there does not reliably reach onClicked.
-    requireInteraction: !!reminder
+    // Every reminder asks nothing of anyone now that the journal status lives
+    // in the title, so they are all free to slide away on their own.
+    requireInteraction: false
   };
-  // A smaller, greyed line under the sentence — present on at most one
-  // notification a day, and only while today's page is unwritten.
-  if (reminder) options.contextMessage = reminder;
 
   chrome.notifications.create(options);
 });
