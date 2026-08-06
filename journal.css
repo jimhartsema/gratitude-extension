@@ -687,7 +687,9 @@ body {
   width: min(430px, 100%);
   background: #f7f2e8;
   border-radius: 18px;
-  padding: 40px 38px 34px;
+  /* Even top and bottom now that nothing sits below the count line — the
+     dismiss button used to hold the lower half open. */
+  padding: 40px 38px;
   text-align: center;
   box-shadow:
     0 24px 50px rgba(44, 38, 32, 0.28),
@@ -733,8 +735,9 @@ body {
   margin: 18px 0 0;
 }
 
-#finish-btn {
-  margin-top: 28px;
+/* The card takes focus so the dialog is announced; never show a ring for it. */
+.finish-card:focus {
+  outline: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
