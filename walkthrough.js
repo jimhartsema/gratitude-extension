@@ -97,7 +97,7 @@
         shell + backdrop +
         '<div class="wt-banner wt-banner--' + (isWin ? 'win' : 'mac') + '" data-banner>' +
         '<img src="icons/icon48.png" alt="">' +
-        '<div><div class="wt-banner-title">A little reminder for you</div>' +
+        '<div><div class="wt-banner-title">Daily Gratitude</div>' +
         '<div class="wt-banner-body">You are allowed to slow down.</div></div>' +
         '<span class="wt-banner-when">now</span>' +
         '</div>' +
