@@ -79,6 +79,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     week.setAttribute('aria-label', `${written} of ${WEEK_DAYS} days written this week`);
   })();
 
+  // ---- The review ask ----
+  // Reviews are most of what decides whether a stranger searching the Web
+  // Store ever sees this extension, so it is worth asking — but only of
+  // people who have written enough pages to have a real opinion, and never
+  // in a way that interrupts the writing.
+  //
+  // Two asks, ever. If the first is waved away we wait until someone is
+  // twenty-five pages in before trying once more, then stop for good.
+  (async function maybeAskForReview() {
+    const REVIEW_URL = 'https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf/reviews';
+    const THRESHOLDS = [5, 25];
+
+    const { review = { asks: 0, done: false } } = await chrome.storage.sync.get('review');
+    if (review.done || review.asks >= THRESHOLDS.length) return;
+
+    const map = await getJournalMap();
+    const written = Object.values(map).filter(isEntryComplete).length;
+    if (written < THRESHOLDS[review.asks]) return;
+
+    const panel = document.getElementById('review');
+    document.getElementById('review-text').textContent =
+      `${written} pages written. If the mornings have been better for it, a word on the Chrome Web Store helps someone else find this.`;
+    panel.hidden = false;
+
+    document.getElementById('review-yes').addEventListener('click', () => {
+      // Marked done on intent, not on an actual review being left — we have
+      // no way to know, and asking again after someone tried would be worse
+      // than never asking twice.
+      chrome.storage.sync.set({ review: { ...review, done: true } });
+      chrome.tabs.create({ url: REVIEW_URL });
+      panel.hidden = true;
+    });
+
+    document.getElementById('review-no').addEventListener('click', () => {
+      chrome.storage.sync.set({ review: { ...review, asks: review.asks + 1 } });
+      panel.hidden = true;
+    });
+  })();
+
   // ---- Settings disclosure ----
   const settingsToggle = document.getElementById('settings-toggle');
   const settings = document.getElementById('settings');
