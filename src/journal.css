@@ -736,6 +736,76 @@ body {
 }
 
 /* The card takes focus so the dialog is announced; never show a ring for it. */
+/* ---- The review ask, inside the finish note ----
+   Separated by a rule so it reads as a postscript to the thank-you rather
+   than part of it. The card is a dialog; this must not look like the reason
+   the dialog opened. */
+.finish-review {
+  margin: 26px 0 0;
+  padding: 22px 0 0;
+  border-top: 1px solid #e3d9c6;
+}
+
+.finish-review[hidden] {
+  display: none;
+}
+
+.finish-review-text {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #5c5348;
+  margin: 0 0 16px;
+  text-wrap: pretty;
+}
+
+.finish-review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+.finish-review-yes,
+.finish-review-no {
+  appearance: none;
+  cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 9px;
+  padding: 10px 15px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.finish-review-yes {
+  border: none;
+  background: #bf5a2e;
+  color: #fdf6ec;
+}
+
+.finish-review-yes:hover {
+  background: #a94e26;
+}
+
+.finish-review-no {
+  border: 1px solid #e3d9c6;
+  background: none;
+  color: #a99d88;
+}
+
+.finish-review-no:hover {
+  color: #7a6f5e;
+  background: #efe7d9;
+}
+
+.finish-review-yes:focus-visible,
+.finish-review-no:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 2px;
+}
+
 .finish-card:focus {
   outline: none;
 }

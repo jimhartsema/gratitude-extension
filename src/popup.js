@@ -88,32 +88,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Two asks, ever. If the first is waved away we wait until someone is
   // twenty-five pages in before trying once more, then stop for good.
   (async function maybeAskForReview() {
-    const REVIEW_URL = 'https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf/reviews';
-    const THRESHOLDS = [5, 25];
-
-    const { review = { asks: 0, done: false } } = await chrome.storage.sync.get('review');
-    if (review.done || review.asks >= THRESHOLDS.length) return;
-
-    const map = await getJournalMap();
-    const written = Object.values(map).filter(isEntryComplete).length;
-    if (written < THRESHOLDS[review.asks]) return;
+    const milestone = await dueReviewMilestone();
+    if (!milestone) return;
 
     const panel = document.getElementById('review');
-    document.getElementById('review-text').textContent =
-      `${written} pages written. If the mornings have been better for it, a word on the Chrome Web Store helps someone else find this.`;
+    document.getElementById('review-text').textContent = reviewSentence(milestone);
     panel.hidden = false;
 
     document.getElementById('review-yes').addEventListener('click', () => {
-      // Marked done on intent, not on an actual review being left — we have
-      // no way to know, and asking again after someone tried would be worse
-      // than never asking twice.
-      chrome.storage.sync.set({ review: { ...review, done: true } });
-      chrome.tabs.create({ url: REVIEW_URL });
+      acceptReview();
       panel.hidden = true;
     });
 
+    // Only an explicit "not now" spends the milestone here. This panel sits
+    // quietly below the journal button and is easy to miss entirely, so
+    // closing the popup without seeing it should not burn one of the two
+    // chances. The finish note, which nobody can miss, spends it on sight.
     document.getElementById('review-no').addEventListener('click', () => {
-      chrome.storage.sync.set({ review: { ...review, asks: review.asks + 1 } });
+      spendReviewAsk();
       panel.hidden = true;
     });
   })();
