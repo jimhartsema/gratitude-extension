@@ -2,7 +2,7 @@
 
 A tiny Chrome extension that sends you one warm reminder every hour — a small nudge to pause and notice something good in your day.
 
-**→ [Install from the Chrome Web Store](#)** *(link coming soon)*
+**→ [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf)**
 
 ---
 
@@ -31,15 +31,17 @@ A one-page daily ritual, in the spirit of the Five Minute Journal: three gratefu
 
 ## Install
 
-### From the Chrome Web Store *(coming soon)*
-Just click **Add to Chrome** — done in 10 seconds.
+### From the Chrome Web Store
+[**Add to Chrome**](https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf) — done in 10 seconds.
 
-### Manually (available now)
+### Manually (for development)
 1. Click the green **Code** button on this page → **Download ZIP**
 2. Unzip the file on your computer
 3. In Chrome, go to `chrome://extensions`
 4. Turn on **Developer mode** (toggle in the top-right corner)
-5. Click **Load unpacked** → select the unzipped folder
+5. Click **Load unpacked** → select the **`src`** folder inside the unzipped
+   folder, not the folder itself — `manifest.json` has to sit at the top of
+   whatever you pick
 6. Done ✅ Your first reminder arrives within the hour
 
 ---
@@ -68,6 +70,33 @@ If you'd rather read the steps:
 If you don't see any reminders after an hour, this is almost always the reason.
 
 ---
+
+## Repo layout
+
+```
+src/          The extension. This is what Chrome loads and what gets zipped.
+site/         Landing page for the QR code and social links (its own README).
+test/         Plain-node tests. No runner, no build step: node test/<name>.js
+docs/         Design notes and specs.
+marketing/    Promo video, store images, business card, social banners.
+releases/     Built zips.
+```
+
+Only `src/` ships. `marketing/` and `releases/` are kept on disk but out of
+git — the video alone is heavier than everything else here combined, and the
+zips are all reproducible from `src/`.
+
+To build a release, zip the *contents* of `src/`, not the folder:
+
+```sh
+cd src && zip -r ../releases/daily-gratitude-$(node -p "require('./manifest.json').version").zip . -x '.*'
+```
+
+## Tests
+
+```sh
+node test/quiet-hours.js
+```
 
 ## Privacy
 
