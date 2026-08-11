@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily Gratitude — get the link on your laptop</title>
+<meta name="description" content="One kind reminder every hour, plus a three-question gratitude journal for your mornings. Leave your email and we'll send the link to your laptop.">
+<meta name="theme-color" content="#f7f2e8">
+<link rel="icon" href="icon128.png">
+
+<!-- Open Graph — matters because this URL gets pasted into DMs and stories -->
+<meta property="og:title" content="Daily Gratitude">
+<meta property="og:description" content="One kind reminder every hour. No streaks, no pressure.">
+<meta property="og:image" content="og.jpg">
+<meta property="og:type" content="website">
+
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="page">
+
+  <header class="brand">
+    <img class="brand-mark" src="icon128.png" alt="" width="44" height="44">
+    <p class="brand-name">Daily Gratitude</p>
+  </header>
+
+  <h1 class="headline">
+    One kind reminder<br>every hour.
+  </h1>
+
+  <p class="sub">
+    Plus a three-question gratitude journal for your mornings.
+    No streaks, no pressure, no account.
+  </p>
+
+  <!-- ══ MOBILE PANEL ═══════════════════════════════════════════════
+       Shown by default. Chrome extensions can't be installed from a
+       phone at all, so the ask here is the email, never the store. -->
+  <section class="panel" id="panel-mobile">
+
+    <!-- Copy is written by app.js: what we can honestly promise depends on
+         whether the extension is on the Web Store yet. -->
+    <p class="panel-eyebrow" id="capture-eyebrow"></p>
+    <p class="panel-lead" id="capture-lead"></p>
+
+    <form class="form" id="capture" novalidate>
+      <label class="visually-hidden" for="email">Your email address</label>
+      <input
+        class="field"
+        id="email"
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        placeholder="you@example.com"
+        required>
+      <button class="btn" type="submit" id="submit"></button>
+      <p class="error" id="error" role="alert" hidden></p>
+    </form>
+
+    <p class="promise" id="capture-promise"></p>
+
+    <!-- Pre-launch only: the handful of people who'd genuinely rather load it
+         unpacked shouldn't be hidden from, but nor should this be the headline
+         ask — almost everyone abandons at developer mode. -->
+    <p class="aside" id="manual" hidden>
+      Comfortable with developer mode?
+      <a id="manual-link" href="#" rel="noopener">Install it from GitHub today.</a>
+    </p>
+
+  </section>
+
+  <!-- ══ DESKTOP PANEL ══════════════════════════════════════════════
+       The short URL gets typed on laptops too. Don't make those people
+       fill in a form to reach a button they could have pressed. -->
+  <section class="panel" id="panel-desktop" hidden>
+
+    <p class="panel-eyebrow">You're on a computer — perfect</p>
+    <p class="panel-lead">
+      You can add it to Chrome right now. Takes about ten seconds.
+    </p>
+
+
+    <a class="btn btn-link" id="cws-desktop" href="#" rel="noopener">Add to Chrome</a>
+
+    <p class="promise">Free, no account, and nothing you write ever leaves your browser.</p>
+
+  </section>
+
+  <!-- ══ SUCCESS ════════════════════════════════════════════════════ -->
+  <section class="panel panel-done" id="panel-done" hidden>
+
+    <p class="done-mark" aria-hidden="true">☀︎</p>
+    <p class="panel-eyebrow">On its way</p>
+    <p class="panel-lead" id="done-lead">
+      Check your inbox from your laptop — the email has the install link in it.
+    </p>
+    <p class="promise" id="done-note"></p>
+
+  </section>
+
+  <!-- Escape hatch: some people won't hand over an email, and some want it
+       now. One quiet line costs nothing and catches both. -->
+  <p class="fallback" id="fallback">
+    Rather not? Type <span class="url">dailygratitude.day</span> into your laptop's browser.
+  </p>
+
+  <footer class="foot">
+    <p class="quote">“Everything you need is already within you.”</p>
+    <p class="foot-meta">
+      No tracking, no analytics, no data collected —
+      <a href="mailto:dailygratitude.contact@gmail.com">get in touch</a>
+    </p>
+  </footer>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

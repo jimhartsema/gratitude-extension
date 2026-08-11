@@ -1,17 +1,17 @@
 .DS_Store
-*.zip
 .claude/settings.local.json
-How to download/
 
-# Promo and store-listing material. None of it is loaded by the extension,
-# and the video/audio in particular is far too heavy to keep in git forever.
-# Deliberately not a blanket *.png — icons/ and images/ ship with the build.
-*.mp4
-*.mp3
-*.srt
-business-card-*.pdf
-card-front-preview.png
-card-back-preview.png
-office-still-for-flow.png
-thumbnail.png
-linkedin/
+# Build output. Every zip here is reproducible from src/, so none of it needs
+# to live in git.
+releases/
+
+# Promo and store-listing material: video, audio, print files, social banners.
+# None of it is loaded by the extension and the video in particular is far too
+# heavy to keep in history forever. Kept on disk, out of the repo.
+marketing/video/
+marketing/store/
+marketing/business-card/
+marketing/linkedin/
+
+# Note the deliberate absence of a blanket *.png — src/icons and src/images
+# ship with the build and must stay tracked.

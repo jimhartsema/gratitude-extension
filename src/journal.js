@@ -442,9 +442,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 20);
     }
 
+    // Asked only here, only after a page has actually been finished. Spent on
+    // sight rather than on an answer: this sits in a dialog nobody can miss,
+    // and clicking away to close should not mean being asked all over again
+    // tomorrow.
+    maybeAskForReview();
+
     // Under reduced motion there is no book to close — the note just arrives.
     if (book) book.close(show);
     else show();
+  }
+
+  async function maybeAskForReview() {
+    const panel = document.getElementById('finish-review');
+    panel.hidden = true;
+
+    const milestone = await dueReviewMilestone();
+    if (!milestone) return;
+
+    document.getElementById('finish-review-text').textContent = reviewSentence(milestone);
+    panel.hidden = false;
+    // The ask opens by naming the count, so the tally line just above it
+    // would say the same thing twice.
+    finishCount.hidden = true;
+    spendReviewAsk();
+
+    document.getElementById('finish-review-yes').onclick = () => {
+      acceptReview();
+      panel.hidden = true;
+    };
+    document.getElementById('finish-review-no').onclick = () => {
+      panel.hidden = true;
+    };
   }
 
   function dismissNote() {

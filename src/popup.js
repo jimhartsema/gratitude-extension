@@ -79,6 +79,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     week.setAttribute('aria-label', `${written} of ${WEEK_DAYS} days written this week`);
   })();
 
+  // ---- The review ask ----
+  // Reviews are most of what decides whether a stranger searching the Web
+  // Store ever sees this extension, so it is worth asking — but only of
+  // people who have written enough pages to have a real opinion, and never
+  // in a way that interrupts the writing.
+  //
+  // Two asks, ever. If the first is waved away we wait until someone is
+  // twenty-five pages in before trying once more, then stop for good.
+  (async function maybeAskForReview() {
+    const milestone = await dueReviewMilestone();
+    if (!milestone) return;
+
+    const panel = document.getElementById('review');
+    document.getElementById('review-text').textContent = reviewSentence(milestone);
+    panel.hidden = false;
+
+    document.getElementById('review-yes').addEventListener('click', () => {
+      acceptReview();
+      panel.hidden = true;
+    });
+
+    // Only an explicit "not now" spends the milestone here. This panel sits
+    // quietly below the journal button and is easy to miss entirely, so
+    // closing the popup without seeing it should not burn one of the two
+    // chances. The finish note, which nobody can miss, spends it on sight.
+    document.getElementById('review-no').addEventListener('click', () => {
+      spendReviewAsk();
+      panel.hidden = true;
+    });
+  })();
+
   // ---- Settings disclosure ----
   const settingsToggle = document.getElementById('settings-toggle');
   const settings = document.getElementById('settings');

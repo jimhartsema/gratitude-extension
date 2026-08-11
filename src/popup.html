@@ -46,6 +46,17 @@
       </button>
     </div>
 
+    <!-- Asked only of people who have actually written pages, and at most
+         twice in the life of an install. Everything about it is quiet on
+         purpose: no stars to tap, no modal, no second chance to nag. -->
+    <div class="review" id="review" hidden>
+      <p class="review-text" id="review-text"></p>
+      <div class="review-actions">
+        <button class="review-yes" id="review-yes" type="button">Say a word</button>
+        <button class="review-no" id="review-no" type="button">Not now</button>
+      </div>
+    </div>
+
     <div class="settings" id="settings" hidden>
       <div class="toggle-row">
         <span class="status" id="status-label">Notifications on</span>
@@ -61,6 +72,7 @@
   <script src="notify.js"></script>
   <script src="journal-data.js"></script>
   <script src="questions.js"></script>
+  <script src="review.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

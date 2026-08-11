@@ -17,7 +17,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const SRC = path.join(__dirname, '..');
+const SRC = path.join(__dirname, '..', 'src');
 
 const DAY_START_HOUR = 8;  // must match background.js
 const DAY_END_HOUR = 22;

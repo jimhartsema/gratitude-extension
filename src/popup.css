@@ -235,6 +235,75 @@ body {
   border-radius: 3px;
 }
 
+/* ---- Review ask ----
+   Sits between the journal button and settings, in the same visual register
+   as settings rather than the CTA: this is an aside, not a second action
+   competing with writing today's page. */
+.review {
+  padding: 14px 24px 16px;
+  border-top: 1px solid #e3d9c6;
+  animation: settingsIn 220ms ease-out both;
+}
+
+.review[hidden] {
+  display: none;
+}
+
+.review-text {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #5c5348;
+  margin: 0 0 11px;
+  text-wrap: pretty;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-yes,
+.review-no {
+  appearance: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.review-yes {
+  border: none;
+  background: #bf5a2e;
+  color: #fdf6ec;
+}
+
+.review-yes:hover {
+  background: #a94e26;
+}
+
+.review-no {
+  border: 1px solid #e3d9c6;
+  background: none;
+  color: #a2967f;
+}
+
+.review-no:hover {
+  color: #7a6f5e;
+  background: #f1eadd;
+}
+
+.review-yes:focus-visible,
+.review-no:focus-visible {
+  outline: 2px solid #e0b89f;
+  outline-offset: 2px;
+}
+
 .settings[hidden] {
   display: none;
 }

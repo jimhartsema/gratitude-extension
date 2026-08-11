@@ -138,11 +138,23 @@
       <h2 class="finish-title" id="finish-title">Thank you!</h2>
       <p class="finish-body" id="finish-body"></p>
       <p class="finish-count" id="finish-count" hidden></p>
+
+      <!-- The review ask, at the one moment a page has just been finished.
+           Shares its budget with the popup's copy, so it appears at most
+           once and never alongside it. -->
+      <div class="finish-review" id="finish-review" hidden>
+        <p class="finish-review-text" id="finish-review-text"></p>
+        <div class="finish-review-actions">
+          <button class="finish-review-yes" id="finish-review-yes" type="button">Say a word</button>
+          <button class="finish-review-no" id="finish-review-no" type="button">Not now</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script src="journal-data.js"></script>
   <script src="questions.js"></script>
+  <script src="review.js"></script>
   <script src="journal.js"></script>
 </body>
 </html>
