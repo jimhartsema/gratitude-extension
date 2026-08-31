@@ -19,7 +19,7 @@ const CONFIG = {
   published: true,
 
   // Chrome Web Store listing. Only used once published is true.
-  cwsUrl: "https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf",
+  cwsUrl: "https://chromewebstore.google.com/detail/ljhdeokfmoakelalgdkcgmnikcnhdhdf",
 
   // Where the source lives until then — the honest fallback for the few
   // people who are happy to load an unpacked extension.

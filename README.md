@@ -2,7 +2,7 @@
 
 A tiny Chrome extension that sends you one warm reminder every hour — a small nudge to pause and notice something good in your day.
 
-**→ [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf)**
+**→ [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/ljhdeokfmoakelalgdkcgmnikcnhdhdf)**
 
 ---
 
@@ -32,7 +32,7 @@ A one-page daily ritual, in the spirit of the Five Minute Journal: three gratefu
 ## Install
 
 ### From the Chrome Web Store
-[**Add to Chrome**](https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf) — done in 10 seconds.
+[**Add to Chrome**](https://chromewebstore.google.com/detail/ljhdeokfmoakelalgdkcgmnikcnhdhdf) — done in 10 seconds.
 
 ### Manually (for development)
 1. Click the green **Code** button on this page → **Download ZIP**
@@ -105,14 +105,14 @@ Daily Gratitude was built with one rule: your data is yours.
 **What we collect:** Nothing. Daily Gratitude does not collect, store, or 
 transmit any personal information, browsing history, or usage data.
 
-**What stays on your device:** Your on/off preference for hourly reminders, 
+**What stays on your device:** Your on/off preference for the hourly affirmations, 
 and anything you write in the morning journal. Journal entries are stored 
 locally in your browser only — never transmitted anywhere, never synced to 
 an account, never seen by us. Uninstalling the extension deletes them.
 
 **Permissions explained:**
-- `alarms` — schedules the hourly reminder and the daily journal check
-- `notifications` — displays the reminder and journal nudge on your screen
+- `alarms` — schedules the hourly affirmation and the daily journal check
+- `notifications` — displays the affirmation and journal nudge on your screen
 - `storage` — remembers your on/off preference and your journal entries, on-device only
 
 **Third parties:** None. No analytics, no tracking tools, no external 

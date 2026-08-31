@@ -19,7 +19,7 @@
  */
 
 const REVIEW_URL =
-  'https://chromewebstore.google.com/detail/Daily%20Gratitude%20Journal%20%26%20Hourly%20Reminders/ljhdeokfmoakelalgdkcgmnikcnhdhdf/reviews';
+  'https://chromewebstore.google.com/detail/ljhdeokfmoakelalgdkcgmnikcnhdhdf/reviews';
 
 /* Full sentences rather than a shared tail: "if it's been good company" is
    true of ten mornings and presumptuous after one. */

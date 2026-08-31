@@ -106,7 +106,7 @@ task to do later:
 >
 > → [Add Daily Gratitude to Chrome](CWS_LINK)
 >
-> It takes about ten seconds. Then one kind reminder arrives every hour while
+> It takes about ten seconds. Then one kind word arrives every hour while
 > Chrome is open, and there's a three-question journal waiting each morning.
 >
 > While you're here, today's:
