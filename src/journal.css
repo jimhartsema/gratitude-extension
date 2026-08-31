@@ -439,6 +439,9 @@ body {
 .sheet-content {
   padding: 56px 60px;
   color: #2c2620;
+  /* Dimmed to texture. These are the reader's own past entries, and at full
+     contrast they invite reading mid-flip instead of scanning past. */
+  opacity: 0.42;
 }
 
 .sheet-date {
@@ -446,7 +449,7 @@ body {
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #a99d88;
+  color: #bcb2a0;
   margin-bottom: 22px;
 }
 
@@ -454,10 +457,10 @@ body {
   font-family: "Newsreader", Georgia, serif;
   font-size: 17px;
   line-height: 1.5;
-  color: #3a332a;
+  color: #8f8878;
   padding-bottom: 8px;
   margin-bottom: 12px;
-  border-bottom: 1px solid #ece3d1;
+  border-bottom: 1px solid #eee6d6;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -482,23 +485,25 @@ body {
   animation: gutter 0.92s ease forwards;
 }
 
-/* Stagger + depth: topmost sheet turns first, last one settles slowest */
+/* Stagger + depth: topmost sheet turns first, last one settles slowest.
+   0.12s apart rather than 0.18 — closer to a thumb releasing a stack than to
+   six sheets each taking a turn, and it keeps the whole intro under 2.5s. */
 .book-stage.riffling .sheet:nth-child(1) { animation-delay: 0.00s; z-index: 6; }
-.book-stage.riffling .sheet:nth-child(2) { animation-delay: 0.18s; z-index: 5; }
-.book-stage.riffling .sheet:nth-child(3) { animation-delay: 0.36s; z-index: 4; }
-.book-stage.riffling .sheet:nth-child(4) { animation-delay: 0.54s; z-index: 3; }
-.book-stage.riffling .sheet:nth-child(5) { animation-delay: 0.72s; z-index: 2; }
+.book-stage.riffling .sheet:nth-child(2) { animation-delay: 0.12s; z-index: 5; }
+.book-stage.riffling .sheet:nth-child(3) { animation-delay: 0.24s; z-index: 4; }
+.book-stage.riffling .sheet:nth-child(4) { animation-delay: 0.36s; z-index: 3; }
+.book-stage.riffling .sheet:nth-child(5) { animation-delay: 0.48s; z-index: 2; }
 .book-stage.riffling .sheet:nth-child(6) {
-  animation-delay: 0.90s;
+  animation-delay: 0.60s;
   animation-duration: 1.15s;
   z-index: 1;
 }
 .book-stage.riffling .sheet:nth-child(1)::before { animation-delay: 0.00s; }
-.book-stage.riffling .sheet:nth-child(2)::before { animation-delay: 0.18s; }
-.book-stage.riffling .sheet:nth-child(3)::before { animation-delay: 0.36s; }
-.book-stage.riffling .sheet:nth-child(4)::before { animation-delay: 0.54s; }
-.book-stage.riffling .sheet:nth-child(5)::before { animation-delay: 0.72s; }
-.book-stage.riffling .sheet:nth-child(6)::before { animation-delay: 0.90s; }
+.book-stage.riffling .sheet:nth-child(2)::before { animation-delay: 0.12s; }
+.book-stage.riffling .sheet:nth-child(3)::before { animation-delay: 0.24s; }
+.book-stage.riffling .sheet:nth-child(4)::before { animation-delay: 0.36s; }
+.book-stage.riffling .sheet:nth-child(5)::before { animation-delay: 0.48s; }
+.book-stage.riffling .sheet:nth-child(6)::before { animation-delay: 0.60s; }
 
 @keyframes pageFlip {
   0% { transform: rotateY(0deg); }
@@ -618,6 +623,13 @@ body {
   animation: hintPulse 2.4s ease-in-out infinite;
 }
 
+/* Nothing to ask for when the book is on a timer — the hint would pulse once
+   and vanish, which reads as a flicker rather than an invitation. */
+.book-stage.self-opening .cover-hint {
+  animation: none;
+  opacity: 0;
+}
+
 /* Once the reader clicks, the hint fades out rather than pulsing on. */
 .book-stage.opening .cover-hint {
   animation: none;
@@ -733,6 +745,17 @@ body {
   text-transform: uppercase;
   color: #a99d88;
   margin: 18px 0 0;
+}
+
+/* The only signposting for the two ways out. Faint on purpose — it is a
+   footnote to the thank-you, not an instruction. */
+.finish-dismiss-hint {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(169, 157, 136, 0.85);
+  margin: 24px 0 0;
 }
 
 /* The card takes focus so the dialog is announced; never show a ring for it. */

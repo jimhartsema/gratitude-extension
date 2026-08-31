@@ -16,14 +16,16 @@ function hasContent(entry) {
 
 // ---- Book cover intro: hold, swing open, riffle through recent pages ----
 // Returns a handle for closing the book again later, or null when there is no
-// book to animate (reduced motion).
-function runBookIntro(dateLabel) {
+// book to animate (reduced motion). onRevealed fires once, the moment the
+// page underneath becomes reachable — however it got there.
+function runBookIntro(dateLabel, onRevealed) {
   const stage = document.getElementById('book-stage');
   if (!stage) return null;
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) {
     stage.remove();
+    if (onRevealed) onRevealed();
     return null;
   }
 
@@ -55,6 +57,16 @@ function runBookIntro(dateLabel) {
 
   const timers = [];
   let opened = false;
+  let revealed = false;
+
+  // One place to hand the page over, so every route in — the riffle finishing,
+  // a click, a keypress — ends the same way.
+  function reveal() {
+    stage.classList.add('removed');
+    if (revealed) return;
+    revealed = true;
+    if (onRevealed) onRevealed();
+  }
 
   function openBook() {
     if (opened) return;
@@ -62,13 +74,13 @@ function runBookIntro(dateLabel) {
     sizeBook(); // final measure right before the reveal
     stage.classList.add('opening');
     timers.push(setTimeout(() => stage.classList.add('riffling'), 620));
-    timers.push(setTimeout(() => stage.classList.add('removed'), 3100));
+    timers.push(setTimeout(reveal, 2450));
   }
 
   function skip() {
     if (stage.classList.contains('removed')) return;
     timers.forEach(clearTimeout);
-    stage.classList.add('removed');
+    reveal();
   }
 
   // The book waits for the reader — a first click opens it, another skips ahead.
@@ -77,7 +89,32 @@ function runBookIntro(dateLabel) {
     else skip();
   });
 
+  // The same two steps from the keyboard. The stage is aria-hidden decoration
+  // and must not take focus, so this listens at the document rather than
+  // making the cover itself tabbable — otherwise the only way past the cover
+  // is a mouse, and a keyboard reader is stuck typing behind a closed book.
+  function onKey(e) {
+    if (stage.classList.contains('removed')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Escape') { skip(); return; }
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault(); // Space would otherwise scroll the page behind
+      if (!opened) openBook();
+      else skip();
+    }
+  }
+  document.addEventListener('keydown', onKey);
+
   return {
+    // Open on a timer instead of waiting to be asked. Used once someone has
+    // a few pages behind them: the ritual is worth a click the first week and
+    // a toll booth by the second, and the riffle still plays either way.
+    armAutoOpen(delay) {
+      if (opened) return;
+      // No "click to open" when nothing is being waited on.
+      stage.classList.add('self-opening');
+      timers.push(setTimeout(openBook, delay));
+    },
     // Swing the cover back over the finished page. onClosed fires once it has
     // settled, so the thank-you note lands on a shut book.
     close(onClosed) {
@@ -171,7 +208,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const todayLabel = formatDateKey(todayKey);
   dateHeading.textContent = todayLabel;
-  const book = runBookIntro(todayLabel);
+  // Once the cover is out of the way, put the cursor on the first line that
+  // still needs writing. The book used to hand over to nothing: the page
+  // arrived, and every morning began with a click into line one.
+  function focusFirstUnwritten() {
+    if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return;
+    const target = gratefulInputs.find((el) => !el.hidden && !el.readOnly && !el.value.trim());
+    if (target) target.focus();
+  }
+
+  const book = runBookIntro(todayLabel, focusFirstUnwritten);
 
   // Today's three themed prompts, seeded by the date (see questions.js).
   const todayQuestions = questionsForDateKey(todayKey);
@@ -220,6 +266,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const recent = writtenKeys.filter((k) => k !== todayKey).slice(-6).reverse()
     .map((k) => [k, allEntries[k]]);
   fillRiffleSheets(recent);
+
+  // Three pages in, the cover stops asking to be clicked.
+  const AUTO_OPEN_AFTER_PAGES = 3;
+  if (book && writtenKeys.length >= AUTO_OPEN_AFTER_PAGES) book.armAutoOpen(400);
 
   // ---- Autosave (whichever page is open, today or earlier) ----
   let saveTimer = null;
@@ -390,6 +440,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // it, and the arrows must not turn pages behind it.
     if (!finishNote.hidden) {
       if (e.key === 'Escape') dismissNote();
+      return;
+    }
+    // The one shortcut that has to work *while* typing — you finish the page
+    // from the third line, with your hands still on the keys.
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      if (!doneBtn.hidden) {
+        e.preventDefault();
+        doneBtn.click();
+      }
       return;
     }
     const el = document.activeElement;
