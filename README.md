@@ -4,6 +4,8 @@ A tiny Chrome extension that sends you one warm reminder every hour — a small 
 
 **→ [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/ljhdeokfmoakelalgdkcgmnikcnhdhdf)**
 
+**→ [dailygratitude on the web](https://jimhartsema.github.io/gratitude-extension/)**
+
 ---
 
 ## What it does
@@ -75,15 +77,15 @@ If you don't see any reminders after an hour, this is almost always the reason.
 
 ```
 src/          The extension. This is what Chrome loads and what gets zipped.
-site/         Landing page for the QR code and social links (its own README).
+site/         Marketing page, deployed to GitHub Pages (its own README).
 test/         Plain-node tests. No runner, no build step: node test/<name>.js
 docs/         Design notes and specs.
 marketing/    Promo video, store images, business card, social banners.
 releases/     Built zips.
 ```
 
-Only `src/` ships. `marketing/` and `releases/` are kept on disk but out of
-git — the video alone is heavier than everything else here combined, and the
+Only `src/` ships. `marketing/`, `releases/` and `Website/` are kept on disk
+but out of git — the video alone is heavier than everything else here combined, and the
 zips are all reproducible from `src/`.
 
 To build a release, zip the *contents* of `src/`, not the folder:
