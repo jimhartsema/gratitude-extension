@@ -15,3 +15,8 @@ marketing/linkedin/
 
 # Note the deliberate absence of a blanket *.png — src/icons and src/images
 # ship with the build and must stay tracked.
+
+# Design handoff bundles: the source zip plus full-size reference images.
+# Same category as marketing/ — kept on disk, out of history. The one asset
+# the site actually needs is committed as site/og.png.
+Website/
